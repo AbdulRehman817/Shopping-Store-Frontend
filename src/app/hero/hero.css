@@ -1,0 +1,120 @@
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: all 0.7s;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 180px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-text {
+  max-width: 600px;
+}
+
+.hero-tag {
+  display: inline-block;
+  padding: 4px 16px;
+  font-size: 11px;
+  background-color: #facc15;
+  color: black;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-size: 50px;
+  font-weight: 800;
+  color: #facc15;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.hero-desc {
+  font-size: 13px;
+  color: #d1d5db;
+  margin: 1rem 0;
+}
+
+.hero-btn {
+  display: inline-block;
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s;
+  text-decoration: none;
+}
+
+.hero-btn:hover {
+  background-color: #fde047;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.arrow:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.arrow.left {
+  left: 1rem;
+}
+
+.arrow.right {
+  right: 1rem;
+}
+
+.arrow-icon {
+  color: white;
+}
+
+.bottom-fade {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 6rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  z-index: 20;
+}
