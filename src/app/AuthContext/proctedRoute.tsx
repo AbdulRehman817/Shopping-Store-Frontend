@@ -10,21 +10,16 @@ interface ProtectedRouteProps {
 const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
 
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  const [token, setToken] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  const [user, setUser] = useState<any | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let checkingAuth = true;
+  let token: string | null = null;
+  let user: string | null = null;
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
     const localUserString = localStorage.getItem("user");
 
-    setToken(localToken);
-    setUser(localUserString);
+    token = localToken;
+    user = localUserString;
 
     if (localToken && localUserString) {
       try {
@@ -44,7 +39,7 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
       router.push("/login");
     }
 
-    setCheckingAuth(false);
+    checkingAuth = false;
   }, [router]);
 
   if (checkingAuth) {
