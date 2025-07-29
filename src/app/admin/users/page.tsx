@@ -34,7 +34,7 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="bg-[#0F172A] p-6 rounded-lg shadow-xl">
+      <div className="bg-[#0F172A] p-6 rounded-lg shadow-xl mt-[20px]">
         <h1 className="text-3xl font-bold text-[#facc15] mb-6 border-b pb-2 border-gray-700">
           👥 All Registered Users
         </h1>
