@@ -56,7 +56,7 @@ export default function AdminOrdersPage() {
 
   return (
     <AdminLayout>
-      <div className="mt-[30px] p-4 sm:p-6 sm:mt-[32px] md:p-8 md:mt-[31px]">
+      <div className="mt-[30px] p-4 sm:p-6 sm:mt-[30px] md:p-8 md:mt-[30px]">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-6 border-b border-gray-700 pb-2 mt-5">
           🛒 All Orders
         </h1>
