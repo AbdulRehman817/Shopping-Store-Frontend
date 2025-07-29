@@ -1,5 +1,3 @@
-/*@typescript-eslint/no-explicit-any*/
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -13,8 +11,13 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
 
   const [checkingAuth, setCheckingAuth] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [token, setToken] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [user, setUser] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
