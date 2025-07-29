@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,19 +11,17 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
 
   let checkingAuth = true;
-  let token: string | null = null;
-  let user: string | null = null;
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
     const localUserString = localStorage.getItem("user");
 
-    token = localToken;
-    user = localUserString;
+    const token = localToken;
+    const user = localUserString;
 
-    if (localToken && localUserString) {
+    if (token && user) {
       try {
-        const parsedUser = JSON.parse(localUserString);
+        const parsedUser = JSON.parse(user);
         if (parsedUser.role === "admin") {
           router.push("/admin/dashboard");
         } else if (parsedUser.role === "user") {

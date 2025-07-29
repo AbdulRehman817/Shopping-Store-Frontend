@@ -34,21 +34,22 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="bg-[#0F172A] p-6 rounded-lg shadow-xl mt-[30px]">
-        <h1 className="text-3xl font-bold text-[#facc15] mb-6 border-b pb-2 ">
+      <div className="bg-[#0F172A] p-4 sm:p-6 rounded-lg shadow-xl mt-[20px] sm:mt-[30px]">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#facc15] mb-4 sm:mb-6 border-b pb-2">
           👥 All Registered Users
         </h1>
+
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-700 rounded-lg overflow-hidden text-sm">
+          <table className="w-full min-w-[600px] border-collapse border border-gray-700 text-sm sm:text-base rounded-lg overflow-hidden">
             <thead className="bg-[#1E293B] text-[#facc15]">
               <tr>
-                <th className="py-3 px-4 text-left border-b border-gray-600">
+                <th className="py-2 sm:py-3 px-3 sm:px-4 text-left border-b border-gray-600">
                   Name
                 </th>
-                <th className="py-3 px-4 text-left border-b border-gray-600">
+                <th className="py-2 sm:py-3 px-3 sm:px-4 text-left border-b border-gray-600">
                   Email
                 </th>
-                <th className="py-3 px-4 text-left border-b border-gray-600">
+                <th className="py-2 sm:py-3 px-3 sm:px-4 text-left border-b border-gray-600">
                   Role
                 </th>
               </tr>
@@ -59,14 +60,17 @@ export default function AdminUsersPage() {
                   key={user._id}
                   className="hover:bg-[#1F2937] transition-colors border-b border-gray-700"
                 >
-                  <td className="py-3 px-4">{user.name}</td>
-                  <td className="py-3 px-4">{user.email}</td>
-                  <td className="py-3 px-4 capitalize">{user.role}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">{user.name}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">{user.email}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4 capitalize">
+                    {user.role}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
         {users.length === 0 && (
           <p className="text-gray-400 mt-4 text-center italic">
             No users found.

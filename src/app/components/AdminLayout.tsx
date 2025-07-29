@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, ClipboardList } from "lucide-react";
+import { Users, ClipboardList, Menu } from "lucide-react";
+import { useState } from "react";
 
 const navItems = [
   { name: "Users", href: "/admin/users", icon: <Users size={18} /> },
@@ -15,12 +16,28 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white">
+      {/* Mobile Topbar */}
+      <div className="flex md:hidden items-center justify-between p-4 border-b border-gray-700 bg-[#0F172A] shadow-md">
+        <h2 className="text-2xl font-bold text-yellow-400">Admin Panel</h2>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-white focus:outline-none"
+        >
+          <Menu size={28} />
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0F172A] border-r border-gray-700 p-6 shadow-lg">
-        <h2 className="text-3xl font-bold mb-10 text-yellow-400 tracking-wide">
+      <aside
+        className={`md:block ${
+          menuOpen ? "block" : "hidden"
+        } w-full md:w-64 bg-[#0F172A] border-r border-gray-700 p-6 shadow-lg z-10`}
+      >
+        <h2 className="text-3xl font-bold mb-10 text-yellow-400 tracking-wide hidden md:block">
           Admin Panel
         </h2>
         <nav className="space-y-4">
@@ -45,7 +62,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10 bg-[#1E293B] overflow-y-auto">
+      <main className="flex-1 p-6 md:p-10 bg-[#1E293B] overflow-y-auto">
         {children}
       </main>
     </div>

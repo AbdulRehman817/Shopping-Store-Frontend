@@ -56,21 +56,22 @@ export default function AdminOrdersPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
-        <h1 className="text-3xl font-extrabold text-white mb-6 border-b border-gray-700 pb-2 mt-[20px]">
+      <div className="mt-[30px] p-4 sm:p-6 sm:mt-[30px] md:p-8 md:mt-[30px]">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-6 border-b border-gray-700 pb-2 mt-5">
           🛒 All Orders
         </h1>
-        <div className="overflow-x-auto bg-[#0F172A] rounded-xl shadow-lg border border-gray-800">
-          <table className="min-w-full text-sm text-left text-gray-300">
+
+        <div className="w-full overflow-x-auto bg-[#0F172A] rounded-xl shadow-lg border border-gray-800">
+          <table className="min-w-[800px] w-full text-sm text-left text-gray-300">
             <thead className="text-xs uppercase bg-[#1E293B] text-gray-400">
               <tr>
-                <th className="p-4">Customer</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Address</th>
-                <th className="p-4">Total</th>
-                <th className="p-4">Date</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Update</th>
+                <th className="p-3 sm:p-4">Customer</th>
+                <th className="p-3 sm:p-4">Email</th>
+                <th className="p-3 sm:p-4">Address</th>
+                <th className="p-3 sm:p-4">Total</th>
+                <th className="p-3 sm:p-4">Date</th>
+                <th className="p-3 sm:p-4">Status</th>
+                <th className="p-3 sm:p-4">Update</th>
               </tr>
             </thead>
             <tbody>
@@ -79,18 +80,18 @@ export default function AdminOrdersPage() {
                   key={order._id}
                   className="border-b border-gray-700 hover:bg-[#1F2937] transition duration-200"
                 >
-                  <td className="p-4 font-semibold">
+                  <td className="p-3 sm:p-4 font-semibold">
                     {order.shippingInfo?.fullName}
                   </td>
-                  <td className="p-4">{order.shippingInfo?.email}</td>
-                  <td className="p-4">{order.shippingInfo?.address}</td>
-                  <td className="p-4 text-green-400">
+                  <td className="p-3 sm:p-4">{order.shippingInfo?.email}</td>
+                  <td className="p-3 sm:p-4">{order.shippingInfo?.address}</td>
+                  <td className="p-3 sm:p-4 text-green-400">
                     ${order.totalAmount.toFixed(2)}
                   </td>
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium
                         ${
@@ -106,11 +107,11 @@ export default function AdminOrdersPage() {
                       {order.status}
                     </span>
                   </td>
-                  <td className="p-4">
+                  <td className="p-3 sm:p-4">
                     <select
                       value={order.status}
                       onChange={(e) => updateStatus(order._id, e.target.value)}
-                      className="bg-[#0F172A] border border-gray-600 text-yellow-400 px-3 py-1 rounded outline-none"
+                      className="bg-[#0F172A] border border-gray-600 text-yellow-400 px-3 py-1 rounded outline-none w-full"
                     >
                       <option value="pending">Pending</option>
                       <option value="processing">Processing</option>
@@ -122,6 +123,7 @@ export default function AdminOrdersPage() {
               ))}
             </tbody>
           </table>
+
           {orders.length === 0 && (
             <div className="p-6 text-center text-gray-400">
               No orders found.
