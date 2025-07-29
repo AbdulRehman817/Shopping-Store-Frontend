@@ -26,8 +26,8 @@ const Checkout = () => {
     postalCode: "",
   });
 
-  const [userId, setUserId] = useState<string | null>(null);     // 🧑 Authenticated User ID
-  const [cartItems, setCartItems] = useState<any[]>([]);         // 🛒 Loaded Cart Items
+  const [userId, setUserId] = useState<string | null>(null); // 🧑 Authenticated User ID
+  const [cartItems, setCartItems] = useState<any[]>([]); // 🛒 Loaded Cart Items
 
   // 🔄 Load cart and decode token on component mount
   useEffect(() => {
@@ -41,7 +41,7 @@ const Checkout = () => {
         setUserId(decoded.userId);
         console.log("✅ Decoded Token:", decoded);
       } catch (err) {
-        console.error("❌ Invalid token");
+        console.error("❌ Invalid token", err);
       }
     }
 
@@ -115,7 +115,9 @@ const Checkout = () => {
         >
           {/* 🧍 Full Name */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Full Name</label>
+            <label className="block text-sm text-gray-300 mb-1">
+              Full Name
+            </label>
             <input
               name="fullName"
               type="text"
@@ -143,7 +145,9 @@ const Checkout = () => {
 
           {/* ☎️ Phone Number */}
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Phone Number</label>
+            <label className="block text-sm text-gray-300 mb-1">
+              Phone Number
+            </label>
             <input
               name="phoneNumber"
               type="tel"

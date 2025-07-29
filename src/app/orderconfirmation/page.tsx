@@ -6,13 +6,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  removeItem,
-  increaseItemQuantity,
-  decreaseItemQuantity,
-  setCart,
-} from "../Redux/cartSlice";
+import { setCart } from "../Redux/cartSlice";
 import type { RootState } from "../Redux/store";
+import Image from "next/image";
 
 /* ------------------------------------
 🧾 Type Definitions
@@ -98,8 +94,6 @@ const OrderConfirmation = () => {
   }, []);
 
   /* 🧮 Helper: Calculate total cart price */
-  const getTotalPrice = () =>
-    cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
   // * Loading state
   if (loading)
@@ -111,11 +105,7 @@ const OrderConfirmation = () => {
 
   // * Error state
   if (error)
-    return (
-      <p className="text-red-500 text-center mt-20 text-lg">
-        {error}
-      </p>
-    );
+    return <p className="text-red-500 text-center mt-20 text-lg">{error}</p>;
 
   // * No orders found
   if (!orders.length)
@@ -199,7 +189,7 @@ const OrderConfirmation = () => {
             className="flex items-center justify-between border-b border-gray-700 pb-4"
           >
             <div className="flex items-center space-x-4">
-              <img
+              <Image
                 src={item.image}
                 alt={item.name}
                 className="w-16 h-16 object-cover rounded-lg border border-gray-600"

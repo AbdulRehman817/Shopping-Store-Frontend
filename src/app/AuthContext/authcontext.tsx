@@ -86,10 +86,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!res.ok) {
         throw new Error(data.message || "Failed to fetch user");
       }
-      setUser(data.data as User); //* ye line jo asal object usko overwrite kardeata hai 
-                                  //* yani agar pehle user object mei name or email tha phir 
-                                  //* mene ye line of code likha to wo user ko overwrite karke
-                                  //* name,email or image add kardega
+      setUser(data.data as User); //* ye line jo asal object usko overwrite kardeata hai
+      //* yani agar pehle user object mei name or email tha phir
+      //* mene ye line of code likha to wo user ko overwrite karke
+      //* name,email or image add kardega
       console.log("User fetched:", data.data); // *and now i can access user properties like user.data.name
     } catch (error) {
       console.error("Failed to fetch user:", error); // ! agar error aaye to console mein dikhaya

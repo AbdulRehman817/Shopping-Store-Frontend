@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../AuthContext/authcontext";
 import { useSelector } from "react-redux";
 import { FaShoppingCart } from "react-icons/fa";
+import Image from "next/image";
 
 const Navbar = () => {
   // * State for mobile menu aur user profile open/close
@@ -94,7 +95,7 @@ const Navbar = () => {
               >
                 {/* <User className="text-[#FACC15]" size={22} /> */}
                 {user?.image && (
-                  <img
+                  <Image
                     src={user.image}
                     alt="profile"
                     className="w-[30px] h-[30px] rounded-full object-cover"

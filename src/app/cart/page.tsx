@@ -5,13 +5,9 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  removeItem,
-  increaseItemQuantity,
-  decreaseItemQuantity,
-  setCart,
-} from "../Redux/cartSlice";
+import { removeItem, setCart } from "../Redux/cartSlice";
 import type { RootState } from "../Redux/store";
+import Image from "next/image";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -32,7 +28,9 @@ const Cart = () => {
 
   // 🧮 Helper: Calculate total cart price
   const getTotalPrice = () =>
-    cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    cart
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white px-6 py-[100px]">
@@ -60,7 +58,7 @@ const Cart = () => {
               transition={{ duration: 0.3 }}
             >
               {/* 🖼️ Product Image */}
-              <img
+              <Image
                 src={item.image}
                 alt={item.name}
                 className="w-28 h-28 object-contain bg-white p-2 rounded-lg"

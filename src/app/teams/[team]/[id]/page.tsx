@@ -10,6 +10,7 @@ import { fetchProducts, addToCart } from "@/app/Redux/cartSlice";
 import { Minus, ShoppingCart, Plus, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -99,7 +100,7 @@ export default function ProductDetails() {
     >
       {/* Left - Image */}
       <div className="w-full lg:w-1/2 flex justify-center relative group mt-[40px]">
-        <img
+        <Image
           src={data.image}
           alt={data.name}
           className="w-full max-w-md rounded-xl shadow-2xl object-contain bg-white p-4 transition-transform duration-300 group-hover:scale-105"

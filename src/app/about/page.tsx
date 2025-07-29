@@ -39,7 +39,7 @@ const About = () => {
           </p>
           <p className="text-gray-400 text-sm mb-6">
             Our curated selection of premium, official jerseys makes you look
-            like a pro — even if you're cheering from home.
+            like a pro — even if you are cheering from home.
           </p>
 
           <Link

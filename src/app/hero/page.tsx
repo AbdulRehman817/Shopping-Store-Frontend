@@ -10,21 +10,21 @@ const slides = [
   {
     title: "PSL 2024 Jerseys",
     desc: "Support your team in official PSL kits. Limited edition drops!",
-    img: "/images/Pakistan-Cricket/PSL-hero.png",
+    Image: "/images/Pakistan-Cricket/PSL-hero.png",
     link: "/teams",
     tag: "🔥 Trending Now",
   },
   {
     title: "IPL 2024 Jerseys",
     desc: "Cheer for your squad in exclusive IPL designs.",
-    img: "/images/IPL-hero.png",
+    Image: "/images/IPL-hero.png",
     link: "/teams",
     tag: "🏏 Hot Drop",
   },
   {
     title: "BBL 2024 Jerseys",
     desc: "Rep your Big Bash League favorites in style.",
-    img: "/images/Australia-Cricket/BBL-hero.png",
+    Image: "/images/Australia-Cricket/BBL-hero.png",
     link: "/teams",
     tag: "🚨 New Arrival",
   },
@@ -49,7 +49,7 @@ const Hero = () => {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-700"
-          style={{ backgroundImage: `url(${slide.img})` }}
+          style={{ backgroundImage: `url(${slide.Image})` }}
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
         </div>

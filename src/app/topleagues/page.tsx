@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 const leagues = [
   {
     name: "Pakistan Super League",
@@ -51,7 +51,7 @@ const TopLeagues = () => {
           >
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
-              <img
+              <Image
                 src={league.image}
                 alt={league.name}
                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"

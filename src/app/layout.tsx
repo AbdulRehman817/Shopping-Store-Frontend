@@ -1,6 +1,4 @@
 "use client";
-
-import type { Metadata } from "next";
 import { AuthProvider } from "./AuthContext/authcontext";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -9,8 +7,6 @@ import Navbar from "./Navbar/page";
 import Footer from "./footer/page";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 // ✅ Import fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,35 +1,36 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 const Teams = [
   {
     name: "Pakistan",
-    image: "/images/Pakistan-Cricket/pakistan-jersey.png",
+    Image: "/images/Pakistan-Cricket/pakistan-jersey.png",
   },
   {
     name: "India",
-    image: "/images/india-jersey.jpg",
+    Image: "/images/india-jersey.jpg",
   },
   {
     name: "Australia",
-    image: "/images/Australia-Cricket/australia_jersey.jpg",
+    Image: "/images/Australia-Cricket/australia_jersey.jpg",
   },
   {
     name: "England",
-    image: "/images/england-jersey.png",
+    Image: "/images/england-jersey.png",
   },
   {
     name: "PSL",
-    image: "/images/Pakistan-Cricket/Islamabad-United-Home-Jersey.png",
+    Image: "/images/Pakistan-Cricket/Islamabad-United-Home-Jersey.png",
   },
   {
     name: "IPL",
-    image: "/images/CSK-jersey.png",
+    Image: "/images/CSK-jersey.png",
   },
   {
     name: "BBL",
-    image: "/images/Australia-Cricket/Melbourne-Stars-jersey.png",
+    Image: "/images/Australia-Cricket/Melbourne-Stars-jersey.png",
   },
 ];
 
@@ -58,8 +59,8 @@ const teams = () => {
               <Link href={`/teams/${team.name}`}>
                 <div className="bg-[#1E293B] border border-[#334155] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all relative group">
                   <div className="relative h-56 bg-[#0F172A] flex items-center justify-center p-6">
-                    <img
-                      src={team.image}
+                    <Image
+                      src={team.Image}
                       alt={team.name}
                       className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
                     />

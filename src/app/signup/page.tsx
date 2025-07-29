@@ -5,7 +5,7 @@ import { motion } from "framer-motion"; // ✅ Correct import for framer-motion
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const signup = () => {
+const Signup = () => {
   const router = useRouter();
   // * User state to store form data
   const [user, setUser] = useState({
@@ -39,7 +39,7 @@ const signup = () => {
   };
 
   const SubmitBtn = () => {
-    router.push("/login"); // Redirect to login page after successful signup`
+    router.push("/login"); // Redirect to login page after successful Signup`
   };
 
   // ! Handle form submission to backend API
@@ -202,4 +202,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;

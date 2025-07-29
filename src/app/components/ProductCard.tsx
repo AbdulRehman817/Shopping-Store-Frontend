@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-``;
+import Image from "next/image";
+
 interface Product {
   _id: string;
   name: string;
@@ -13,13 +14,11 @@ interface Product {
 
 const ProductCard = ({
   product,
-  team,
 }: {
   product: Product;
   team: string | string[];
 }) => {
   // ✅ Ensure team is a string (in case it's a dynamic route param  like ["IPL"])
-  const teamName = Array.isArray(team) ? team[0] : team;
 
   return (
     <motion.div
@@ -29,7 +28,7 @@ const ProductCard = ({
       <Link href={`/teams/teamName/${product._id}`}>
         {/* Image Section */}
         <div className="relative bg-[#F1F5F9] p-4 h-60 flex items-center justify-center">
-          <img
+          <Image
             src={product.image}
             alt={product.name}
             className="max-h-full object-contain"

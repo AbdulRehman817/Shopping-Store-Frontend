@@ -17,6 +17,7 @@ import {
   setCart,
 } from "../Redux/cartSlice";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 // * Product ka Type define kar rahe hain strongly typed data ke liye
 interface Product {
@@ -93,7 +94,7 @@ export default function CartDropdown() {
               className="flex items-center justify-between bg-[#334155] rounded-lg p-3 shadow-sm hover:shadow-md transition"
             >
               {/* * Product image */}
-              <img
+              <Image
                 src={item.image}
                 alt={item.name}
                 className="w-12 h-12 object-cover rounded-md border border-gray-500"
