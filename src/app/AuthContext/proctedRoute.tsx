@@ -31,7 +31,7 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   }, [router]);
 
   if (checkingAuth) {
-    return null; // You can show a spinner or loading screen here
+    return setCheckingAuth(false); // You can show a spinner or loading screen here
   }
 
   return <>{children}</>;
