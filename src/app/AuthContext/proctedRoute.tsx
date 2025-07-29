@@ -12,9 +12,11 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
 
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  //**This tells ESLint and TypeScript:
+  const [_, setToken] = useState<string | null>(null);
+  const [__, setUser] = useState<any>(null);
 
+  // **Yes, I’m intentionally not using the first variable.”
   useEffect(() => {
     const localToken = localStorage.getItem("token");
     const localUserString = localStorage.getItem("user");
