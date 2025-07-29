@@ -5,10 +5,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import ProductCard from "@/app/components/ProductCard";
-import { FaSearch } from "react-icons/fa";
 
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   image: string;
@@ -18,15 +17,20 @@ interface Product {
 }
 
 const TeamPage = () => {
-  const { teamName } = useParams();
+  const params = useParams();
+  const teamParam = params?.team;
+
+  const team = Array.isArray(teamParam) ? teamParam[0] : teamParam || ""; // fallback to empty string
+
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        if (!team) return;
         const res = await axios.get<{ products: Product[] }>(
-          `http://localhost:3000/api/v1/team/${teamName}`
+          `http://localhost:3000/api/v1/team/${team}`
         );
         setProducts(res.data.products);
       } catch (err) {
@@ -34,7 +38,7 @@ const TeamPage = () => {
       }
     };
     fetchProducts();
-  }, [teamName]);
+  }, [team]);
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -73,10 +77,10 @@ const TeamPage = () => {
 
       {/* Main Content */}
       <main className="flex-1 px-10 py-10">
-        <h1 className="text-5xl font-extrabold text-yellow-400 tracking-wide">
-          {String(teamName).toUpperCase()} JERSEYS
+        <h1 className="text-5xl font-extrabold text-yellow-400 mt-[60px] text-center tracking-wide">
+          {team.toUpperCase()} JERSEYS
         </h1>
-        <p className="mt-2 text-gray-300 text-lg">
+        <p className="mt-2 text-gray-300 text-lg text-center">
           {filteredProducts.length} results · Official 2024 Kits
         </p>
 
@@ -84,8 +88,8 @@ const TeamPage = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <motion.div key={product.id} whileHover={{ scale: 1.03 }}>
-                <ProductCard product={product} />
+              <motion.div key={product._id} whileHover={{ scale: 1.03 }}>
+                <ProductCard product={product} team={team} />
               </motion.div>
             ))
           ) : (

@@ -1,153 +1,247 @@
 "use client";
-import { motion } from "framer-motion";
-import { useAuth } from "../AuthContext/authcontext";
-import Link from "next/link";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const Login = () => {
-  const router = useRouter();     
-  const { storetokenInLocalStorage } = useAuth();
-  const [error, setError] = useState<string | null>(null); // ✅ Use string | null for error
-  // * user state mein email, password, aur name store hota hai
-  const [user, setUser] = useState({ name: "", password: "", email: "" });
+const LoginPage = () => {
+  const router = useRouter();
 
-  // TODO: Jab user input fields mein kuch likhta hai to ye function data update karta hai
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = e.target;
-    setUser((prev) => ({
-      ...prev,
-      [name]: value, // * yeh sirf usi field ko update karega jahan user likh raha hai
-    }));
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("admin");
+  const [error, setError] = useState("");
 
-  // ! Login form submit hone par ye function call hota hai
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // * page ko reload hone se rokta hai
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    console.log("Logging in with:", { email, password, role });
 
     try {
-      // * backend API ko login data send karte hain
-      const response = await fetch(`http://localhost:3000/api/v1/login`, {
+      const res = await fetch("http://localhost:3000/api/v1/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
       });
+      console.log("role", role);
+      const data: any = await res.json();
 
-      // ! agar response ok nahi hai to error throw karo
-      const res_data = await response.json();
-      if (!response.ok) {
-        setError("Login failed");
+      console.log("Response from server:", data);
+
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        console.error("Login error:", data.message || "Login failed");
         return;
       }
-      if (response.ok && res_data.accessToken) {
-        // toast.success("Login successful");
-        storetokenInLocalStorage(res_data.accessToken);
-        console.log(
-          "Token stored in localStorage:",
-          localStorage.getItem("token")
-        );
-        router.push("/");
-      } else {
-        setError("Invalid credentials");
-        // toast.error("Invalid credentials");
+
+      if (!data.accessToken) {
+        setError("Token missing in response");
+        console.error("Token missing in response:", data);
+        return;
       }
-    } catch (error) {
-      console.error("Login Error:", error);
-      setError("Something went wrong. Please try again.");
-      // toast.error("Something went wrong. Please try again.");
+
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("user", JSON.stringify(data.data));
+
+      console.log("Token saved:", data.accessToken);
+      console.log("User saved:", data.data);
+
+      // Redirect based on role
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (role === "user") {
+        console.log("Redirecting to /user/dashboard");
+        router.push("/"); // replace with your user route
+      }
+    } catch (err) {
+      setError("Something went wrong");
+      console.error("Catch error:", err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {/* * Page layout animation with framer-motion */}
-      <motion.div
-        className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-6 py-16 text-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* * Main container with shadow and border */}
-        <div className="w-full max-w-5xl bg-[#1E293B] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#334155]">
-          {/* ! Left Section - Info Panel (sirf large screens pe dikhega) */}
-          <div className="hidden md:flex flex-col justify-center items-center bg-[#0F172A] w-1/2 p-10">
-            <h2 className="text-3xl font-bold text-[#FACC15] mb-4">
-              Welcome Back!
-            </h2>
-            <p className="text-gray-400 text-center">
-              Log in to access your account, manage orders, and explore new
-              arrivals!
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-[#0F172A] rounded-xl shadow-xl p-8">
+        <h2 className="text-3xl font-bold text-center text-[#FACC15] mb-6">
+          Welcome Back
+        </h2>
+
+        {error && (
+          <div className="bg-red-600 text-white text-sm p-2 rounded mb-4 text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 rounded bg-[#1E293B] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+            />
           </div>
 
-          {/* ! Right Section - Login Form */}
-          <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-10">
-            <h3 className="text-2xl font-bold text-[#FACC15] mb-6 text-center">
-              Login to Your Account
-            </h3>
-
-            <div className="space-y-5">
-              {/* * Email Input Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  onChange={handleInput}
-                  placeholder="you@example.com"
-                  value={user.email}
-                  className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                />
-              </div>
-
-              {/* * Password Input Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={handleInput}
-                  value={user.password}
-                  placeholder="••••••••"
-                  className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                />
-              </div>
-
-              {/* * Error Message */}
-              {error && (
-                <div className="text-red-400 text-sm text-center">{error}</div>
-              )}
-
-              {/* * Submit Button */}
-              <button
-                type="submit"
-                className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
-              >
-                Login
-              </button>
-            </div>
-
-            {/* * Link to Signup Page */}
-            <p className="mt-6 text-sm text-center text-gray-400">
-              Don’t have an account?{" "}
-              <Link
-                href="/signup"
-                className="text-[#FACC15] font-medium hover:underline"
-              >
-                Sign Up
-              </Link>
-            </p>
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              className="w-full px-4 py-2 rounded bg-[#1E293B] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+            />
           </div>
-        </div>
-      </motion.div>
-    </form>
+
+          <div>
+            <label className="block text-sm mb-1 text-gray-300">Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full px-4 py-2 rounded bg-[#1E293B] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#E11D48] hover:bg-pink-600 transition-colors duration-200 text-white py-2 rounded-lg font-semibold"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="mt-6 text-sm text-center text-gray-400">
+          Don’t have an account?{" "}
+          <Link href="/signup" className="text-[#FACC15] hover:underline">
+            Sign Up
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 };
 
-export default Login;
+export default LoginPage;
+// "use client";
+
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+
+// const LoginPage = () => {
+//   const router = useRouter();
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [role, setRole] = useState("admin");
+//   const [error, setError] = useState("");
+
+//   const handleLogin = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setError("");
+
+//     try {
+//       const res = await fetch("http://localhost:3000/api/v1/login", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email, password, role }),
+//       });
+
+//       const data = await res.json();
+
+//       if (!res.ok) {
+//         setError(data.message || "Login failed");
+//         return;
+//       }
+
+//       if (!data.accessToken) {
+//         setError("Access token missing in response");
+//         return;
+//       }
+
+//       localStorage.setItem("token", data.accessToken);
+//       localStorage.setItem("user", JSON.stringify(data.data));
+
+//       router.push(role === "admin" ? "/admin/dashboard" : "/");
+//     } catch (err) {
+//       setError("Something went wrong. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-4">
+//       <div className="w-full max-w-md bg-[#0F172A] rounded-xl shadow-xl p-8">
+//         <h2 className="text-3xl font-bold text-center text-[#FACC15] mb-6">
+//           Welcome Back
+//         </h2>
+
+//         {error && (
+//           <div className="bg-red-600 text-white text-sm p-2 rounded mb-4 text-center">
+//             {error}
+//           </div>
+//         )}
+
+//         <form onSubmit={handleLogin} className="space-y-4">
+//           <div>
+//             <label className="block text-sm mb-1 text-gray-300">Email</label>
+//             <input
+//               type="email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               required
+//               placeholder="Enter your email"
+//               className="w-full px-4 py-2 rounded bg-[#1E293B] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+//             />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm mb-1 text-gray-300">Password</label>
+//             <input
+//               type="password"
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               required
+//               placeholder="••••••••"
+//               className="w-full px-4 py-2 rounded bg-[#1E293B] text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+//             />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm mb-1 text-gray-300">Role</label>
+//             <select
+//               value={role}
+//               onChange={(e) => setRole(e.target.value)}
+//               className="w-full px-4 py-2 rounded bg-[#1E293B] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+//             >
+//               <option value="user">User</option>
+//               <option value="admin">Admin</option>
+//             </select>
+//           </div>
+
+//           <button
+//             type="submit"
+//             className="w-full bg-[#E11D48] hover:bg-pink-600 transition-colors duration-200 text-white py-2 rounded-lg font-semibold"
+//           >
+//             Sign In
+//           </button>
+//         </form>
+
+//         <p className="mt-6 text-sm text-center text-gray-400">
+//           Don’t have an account?{" "}
+//           <Link href="/signup" className="text-[#FACC15] hover:underline">
+//             Sign Up
+//           </Link>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default LoginPage;

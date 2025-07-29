@@ -1,40 +1,58 @@
 "use client";
 import Link from "next/link";
-
+import { motion } from "framer-motion";
+``;
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   image: string;
   tag?: string;
+  type?: string;
 }
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({
+  product,
+  team,
+}: {
+  product: Product;
+  team: string | string[];
+}) => {
+  // ✅ Ensure team is a string (in case it's a dynamic route param  like ["IPL"])
+  const teamName = Array.isArray(team) ? team[0] : team;
+
   return (
-    <Link href={`/product/${product.id}`}>
-      <div className="bg-white block rounded-lg overflow-hidden shadow-md">
-        {/* Bestseller Tag */}
-        {product.tag === "bestseller" && (
-          <div className="bg-yellow-400 text-black font-semibold px-3 py-1 rounded-full text-sm inline-block ml-4 mt-4">
-            🔥 Bestseller
-          </div>
-        )}
-        {/* Image */}
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-48 object-contain "
-        />
-        {/* Details */}
-        <div className="p-4 bg-[#1E293B]">
-          <h3 className="text-lg font-bold text-[#FACC15] ">{product.name}</h3>
-          {product.tag === "bestseller" && (
-            <p className="text-sm text-gray-600 mb-1">World Cup</p>
-          )}
-          <p className="text-sm  text-gray-600 ">${product.price}</p>
+    <motion.div
+      className="rounded-xl overflow-hidden shadow-lg bg-[#0F172A] hover:shadow-2xl transition-transform duration-300"
+      whileHover={{ scale: 1.03 }}
+    >
+      <Link href={`/teams/teamName/${product._id}`}>
+        {/* Image Section */}
+        <div className="relative bg-[#F1F5F9] p-4 h-60 flex items-center justify-center">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="max-h-full object-contain"
+          />
+
+          {/* Tag */}
         </div>
-      </div>
-    </Link>
+
+        {/* Info Section */}
+        <div className="bg-[#1E293B] text-white p-4 space-y-2">
+          <h3 className="text-lg font-bold text-[#FACC15] line-clamp-2">
+            {product.name}
+          </h3>
+          <p className="text-sm text-gray-300 capitalize">{product.type}</p>
+
+          <div className="flex justify-between items-center pt-2">
+            <p className="text-xl font-bold text-white">${product.price}</p>
+
+            {/* Optional: Rating */}
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 };
 

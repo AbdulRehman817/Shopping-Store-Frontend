@@ -3,7 +3,10 @@ import Lenis from "@studio-freight/lenis";
 
 export const useLenis = () => {
   useEffect(() => {
-    console.log("✅ Lenis initialized"); // 👈 This should appear in your browser console
+    // ✅ Prevent running on the server
+    if (typeof window === "undefined") return;
+
+    console.log("✅ Lenis initialized");
 
     const lenis = new Lenis({
       duration: 1.2,

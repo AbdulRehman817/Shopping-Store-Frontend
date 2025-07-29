@@ -36,7 +36,7 @@ const Teams = [
 const teams = () => {
   return (
     <>
-      <section className="min-h-screen bg-[#0F172A] px-4 py-20 text-white">
+      <section className="min-h-screen bg-[#1E293B] px-4 py-20 text-white">
         <motion.h2
           className="text-5xl font-extrabold text-center text-[#FACC15] mb-20 mt-[35px] tracking-tight"
           initial={{ opacity: 0, y: -40 }}

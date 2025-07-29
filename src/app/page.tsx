@@ -1,9 +1,12 @@
 import React from "react";
 import Hero from "./hero/page";
+import ProtectedRouteProvider from "./AuthContext/proctedRoute";
 const page = () => {
   return (
     <>
-      <Hero />
+      <ProtectedRouteProvider>
+        <Hero />
+      </ProtectedRouteProvider>
     </>
   );
 };
