@@ -32,8 +32,6 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
       } else {
         router.push("/login");
       }
-    } else {
-      router.push("/login");
     }
 
     setCheckingAuth(false);
