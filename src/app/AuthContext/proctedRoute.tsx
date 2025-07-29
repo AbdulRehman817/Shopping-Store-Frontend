@@ -17,21 +17,27 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
-    const localUser = localStorage.getItem("user");
+    const localUserString = localStorage.getItem("user");
 
     setToken(localToken);
+    setUser(localUserString);
 
-    if (localUser) {
-      const parsedUser = JSON.parse(localUser);
-      setUser(parsedUser);
-
-      if (localToken && parsedUser.role === "admin") {
-        router.push("/admin/dashboard");
-      } else if (localToken && parsedUser.role === "user") {
-        router.push("/");
-      } else {
+    if (localToken && localUserString) {
+      try {
+        const parsedUser = JSON.parse(localUserString);
+        if (parsedUser.role === "admin") {
+          router.push("/admin/dashboard");
+        } else if (parsedUser.role === "user") {
+          router.push("/");
+        } else {
+          router.push("/login");
+        }
+      } catch (err) {
+        console.error("Error parsing user:", err);
         router.push("/login");
       }
+    } else {
+      router.push("/login");
     }
 
     setCheckingAuth(false);
