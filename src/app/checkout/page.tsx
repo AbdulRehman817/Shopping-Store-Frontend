@@ -77,11 +77,14 @@ const Checkout = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        "https://shopping-store-h2vg.vercel.app/api/v1/orders",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (res.ok) {
         localStorage.removeItem("cart"); // ✅ Clear cart on successful order

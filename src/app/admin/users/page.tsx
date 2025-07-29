@@ -17,13 +17,15 @@ export default function AdminUsersPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:3000/api/v1/admin/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://shopping-store-h2vg.vercel.app/api/v1/admin/users",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const data = await res.json();
       const filteredUser = data.filter((user: User) => user.role !== "admin");
-      console.log("Fetched users:", filteredUser);
       setUsers(filteredUser || []);
     };
 
@@ -32,28 +34,45 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <h1 className="text-2xl font-bold mb-4">All Users</h1>
-      <table className="w-full border border-gray-700">
-        <thead className="bg-gray-800">
-          <tr>
-            <th className="p-2">Name</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr
-              key={user._id}
-              className="border-t border-gray-700 hover:bg-gray-900"
-            >
-              <td className="p-2">{user.name}</td>
-              <td className="p-2">{user.email}</td>
-              <td className="p-2">{user.role}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="bg-[#0F172A] p-6 rounded-lg shadow-xl">
+        <h1 className="text-3xl font-bold text-[#facc15] mb-6 border-b pb-2 border-gray-700">
+          👥 All Registered Users
+        </h1>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-700 rounded-lg overflow-hidden text-sm">
+            <thead className="bg-[#1E293B] text-[#facc15]">
+              <tr>
+                <th className="py-3 px-4 text-left border-b border-gray-600">
+                  Name
+                </th>
+                <th className="py-3 px-4 text-left border-b border-gray-600">
+                  Email
+                </th>
+                <th className="py-3 px-4 text-left border-b border-gray-600">
+                  Role
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr
+                  key={user._id}
+                  className="hover:bg-[#1F2937] transition-colors border-b border-gray-700"
+                >
+                  <td className="py-3 px-4">{user.name}</td>
+                  <td className="py-3 px-4">{user.email}</td>
+                  <td className="py-3 px-4 capitalize">{user.role}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {users.length === 0 && (
+          <p className="text-gray-400 mt-4 text-center italic">
+            No users found.
+          </p>
+        )}
+      </div>
     </AdminLayout>
   );
 }

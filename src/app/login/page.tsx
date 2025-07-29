@@ -19,11 +19,14 @@ const LoginPage = () => {
     console.log("Logging in with:", { email, password, role });
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
-      });
+      const res = await fetch(
+        "https://shopping-store-h2vg.vercel.app/api/v1/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role }),
+        }
+      );
       console.log("role", role);
       const data: any = await res.json();
 

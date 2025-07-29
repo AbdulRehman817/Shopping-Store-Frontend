@@ -78,7 +78,9 @@ const OrderConfirmation = () => {
         const decoded = jwtDecode<TokenPayload>(token);
         const userId = decoded.userId;
 
-        const res = await fetch(`http://localhost:3000/api/v1/user/${userId}`);
+        const res = await fetch(
+          `https://shopping-store-h2vg.vercel.app/api/v1/user/${userId}`
+        );
         const data = await res.json();
 
         if (!res.ok) throw new Error("Failed to fetch orders.");

@@ -56,10 +56,13 @@ const Signup = () => {
       }
 
       // * Send POST request to backend
-      const response = await fetch("http://localhost:3000/api/v1/register", {
-        method: "POST",
-        body: formData, // ! Don't manually set headers for FormData
-      });
+      const response = await fetch(
+        "https://shopping-store-h2vg.vercel.app/api/v1/register",
+        {
+          method: "POST",
+          body: formData, // ! Don't manually set headers for FormData
+        }
+      );
 
       if (!response.ok) {
         // ! Server responded with an error

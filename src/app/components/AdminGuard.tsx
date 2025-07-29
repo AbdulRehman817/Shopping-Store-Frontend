@@ -22,9 +22,12 @@ export default function AdminGuard({ children }: Props) {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://shopping-store-h2vg.vercel.app/api/v1/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await res.json();
         const role = data?.data?.role || data.role;
 

@@ -26,7 +26,9 @@ interface CartState {
 export const fetchProducts = createAsyncThunk<Product[]>(
   "cart/fetchProducts",
   async () => {
-    const response = await fetch(`http://localhost:3000/api/v1/getProduct`);
+    const response = await fetch(
+      `https://shopping-store-h2vg.vercel.app/api/v1/getProduct`
+    );
     const data = await response.json();
     return data.products; // Assuming API returns { products: [...] }
   }
