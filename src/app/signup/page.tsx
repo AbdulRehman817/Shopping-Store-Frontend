@@ -1,24 +1,22 @@
 "use client";
 
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 
-interface User {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-}
-
-const SignupPage = () => {
+const Signup = () => {
   const router = useRouter();
-  const [message, setMessage] = useState("");
-  const [user, setUser] = useState<User>({
+
+  const [user, setUser] = useState({
     name: "",
-    email: "",
     password: "",
-    role: "User",
+    email: "",
+    image: null as File | null,
   });
+
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,98 +26,64 @@ const SignupPage = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUser((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setMessage("");
+    setLoading(true);
 
     try {
-      const response = await fetch("/api/register", {
+      const formData = new FormData();
+      formData.append("name", user.name);
+      formData.append("email", user.email);
+      formData.append("password", user.password);
+      if (user.image) {
+        formData.append("image", user.image);
+      }
+
+      const response = await fetch
+("https://shopping-store-alpha-eight.vercel.app/api/v1/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
+        body: formData,
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
-      if (response.ok) {
-        setMessage("✅ Registered successfully!");
-        router.push("/login");
-      } else {
-        setMessage(data.message || "❌ Registration failed.");
+      if (!response.ok) {
+        setMessage(result.message || "❌ Registration failed. Check your data.");
+        setLoading(false);
+        return;
       }
+
+      setMessage("✅ Registered successfully!");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
     } catch (error) {
-      console.error("Registration error:", error);
-      setMessage("❌ Something went wrong.");
+      console.error("Signup error:", error);
+      setMessage("❌ Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white p-6 rounded-lg shadow-md"
+    <form onSubmit={handleSubmit}>
+      <motion.div
+        className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-4 py-16 text-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
       >
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
-
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={user.name}
-          onChange={handleInput}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={user.email}
-          onChange={handleInput}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={user.password}
-          onChange={handleInput}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
-
-        <select
-          name="role"
-          value={user.role}
-          onChange={(e) =>
-            setUser((prev) => ({
-              ...prev,
-              role: e.target.value,
-            }))
-          }
-          className="w-full mb-4 px-4 py-2 border rounded"
-        >
-          <option value="User">User</option>
-          <option value="Admin">Admin</option>
-        </select>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Sign Up
-        </button>
-
-        {message && (
-          <p className="mt-4 text-center text-red-600">{message}</p>
-        )}
-      </form>
-    </div>
-  );
-};
-
-export default SignupPage;
+        <div className="w-full max-w-4xl bg-[#1E293B] rounded-2xl shadow-2xl flex flex-col md:flex-row border border-[#334155] overflow-hidden">
+          {/* Left */}
+          <div className="hidden md:flex flex-col justify-center items-center bg-[#0F172A
