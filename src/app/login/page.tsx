@@ -17,10 +17,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setLoading(true);
-
-    console.log("Logging in with:", { email, password, role });
 
     try {
       const res = await fetch(
@@ -31,42 +28,31 @@ const LoginPage = () => {
           body: JSON.stringify({ email, password, role }),
         }
       );
-      console.log("role", role);
+
       const data: any = await res.json();
 
-      console.log("Response from server:", data);
-
-      if (!res.ok) {
+      if (!res.ok || !data.accessToken) {
         toast.error(data.message || "Login failed");
-
         console.error("Login error:", data.message || "Login failed");
-        return;
-      }
-
-      if (!data.accessToken) {
-        toast.error("Token missing in response");
-        console.error("Token missing in response:", data);
+        setLoading(false); // ← fix here
         return;
       }
 
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.data));
 
-      console.log("Token saved:", data.accessToken);
-      console.log("User saved:", data.data);
-
       // Redirect based on role
       if (role === "admin") {
         router.push("/admin/dashboard");
-      } else if (role === "user") {
-        console.log("Redirecting to /user/dashboard");
-
+      } else {
         router.push("/"); // replace with your user route
       }
+
+      // No setLoading(false) here because we redirect right after
     } catch (err) {
       toast.error("Something went wrong");
       console.error("Catch error:", err);
-      setLoading(false);
+      setLoading(false); // ← also fix here
     }
   };
 
