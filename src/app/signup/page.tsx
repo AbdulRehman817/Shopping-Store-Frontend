@@ -77,8 +77,8 @@ const Signup = () => {
       }
 
       toast.success("✅ Registered successfully!");
-      setTimeout(() => router.push("/"), 1500); // redirect after 1.5s
-    } catch (error) {
+      router.push("/");
+ catch (error) {
       console.error(error);
       toast.error("❌ Something went wrong. Try again.");
     } finally {
