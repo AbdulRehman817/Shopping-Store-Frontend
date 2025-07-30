@@ -2,6 +2,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Triangle } from "react-loader-spinner";
 
 const Teams = [
   {
@@ -35,7 +37,25 @@ const Teams = [
 ];
 
 const teams = () => {
-  return (
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // simulate loading time
+
+    return () => clearTimeout(timer);
+  }, []);
+  return loading ? (
+    <Triangle
+      visible={true}
+      height="80"
+      width="80"
+      color="#FACC15"
+      ariaLabel="triangle-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+    />
+  ) : (
     <>
       <section className="min-h-screen bg-[#1E293B] px-4 py-20 text-white">
         <motion.h2

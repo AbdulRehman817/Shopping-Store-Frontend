@@ -46,22 +46,21 @@ export default function AdminSettingsPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
     if (!admin) return;
     setLoading(true);
+
     try {
-      const { data } = await axios.put(
-        `https://shopping-store-alpha-eight.vercel.app/api/v1/admin/user/${admin._id}`,
-        {
-          ...formData,
-          role: admin.role,
-        }
-      );
-      localStorage.setItem("user", JSON.stringify(data));
-      setAdmin(data);
+      const updatedUser = {
+        ...admin,
+        ...formData, // updated name & email
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setAdmin(updatedUser);
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Failed to update profile", error);
+      console.error("Failed to update profile in localStorage", error);
     } finally {
       setLoading(false);
     }
@@ -69,18 +68,27 @@ export default function AdminSettingsPage() {
 
   return (
     <AdminLayout>
-      <div className="mt-12 px-6 md:px-10">
-        <h1 className="text-4xl font-extrabold text-white mb-8 flex items-center gap-3 tracking-tight">
-          <ShieldCheck className="w-8 h-8 text-yellow-400" />
-          Admin Profile Settings
-        </h1>
+      <div className="mt-12 px-4 sm:px-6 md:px-10">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white flex items-center gap-2 tracking-tight">
+            <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8 text-yellow-400" />
+            Admin Profile Settings
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-500 transition-all"
+          >
+            Logout
+          </button>
+        </div>
 
-        <div className="bg-[#0F172A] border border-gray-800 rounded-3xl shadow-2xl p-10 max-w-4xl mx-auto relative">
+        <div className="bg-[#0F172A] border border-gray-800 rounded-3xl shadow-2xl p-6 sm:p-10 max-w-4xl mx-auto">
           {!admin ? (
             <p className="text-gray-400 text-center">Loading admin info...</p>
           ) : (
             <>
-              <div className="flex flex-col sm:flex-row items-center gap-6 mb-10">
+              {/* Avatar and Name */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 sm:mb-10 text-center sm:text-left">
                 <img
                   src={
                     admin.image ||
@@ -88,10 +96,10 @@ export default function AdminSettingsPage() {
                       encodeURIComponent(admin.name)
                   }
                   alt="Admin Avatar"
-                  className="w-28 h-28 rounded-full border-4 border-yellow-500 shadow-lg object-cover transition duration-300 hover:scale-105"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-yellow-500 object-cover transition duration-300 hover:scale-105"
                 />
-                <div className="text-center sm:text-left">
-                  <h2 className="text-3xl font-bold text-white">
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">
                     {admin.name}
                   </h2>
                   <p className="text-sm text-gray-400 mt-1">
@@ -100,7 +108,8 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
 
-              <div className="space-y-6">
+              {/* Info Rows */}
+              <div className="space-y-5">
                 <InfoRow
                   icon={<Mail className="text-pink-500" />}
                   label="Email"
@@ -118,10 +127,10 @@ export default function AdminSettingsPage() {
                 />
               </div>
 
-              <div className="mt-12 text-right">
+              <div className="mt-10 text-right">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-400 hover:shadow-lg transition-all duration-200"
+                  className="bg-yellow-500 text-black px-5 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition"
                 >
                   Edit Profile
                 </button>
@@ -132,24 +141,17 @@ export default function AdminSettingsPage() {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-            <div className="bg-[#0F172A] rounded-2xl border border-gray-800 p-8 w-full max-w-lg relative shadow-xl">
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
+            <div className="bg-[#0F172A] rounded-2xl border border-gray-800 p-6 sm:p-8 w-full max-w-lg relative shadow-xl">
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
               >
                 <X size={24} />
               </button>
-              <h2 className="text-2xl font-bold text-white mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
                 Edit Admin Profile
               </h2>
-              <br />
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-200"
-              >
-                Logout
-              </button>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">
@@ -173,13 +175,21 @@ export default function AdminSettingsPage() {
                     className="w-full px-4 py-2 rounded-lg bg-[#1E293B] text-white border border-gray-700 focus:outline-none focus:border-yellow-500"
                   />
                 </div>
-                <button
-                  onClick={handleUpdate}
-                  disabled={loading}
-                  className="w-full bg-yellow-500 text-black px-6 py-2 mt-4 rounded-lg font-semibold hover:bg-yellow-400 transition duration-200"
-                >
-                  {loading ? "Updating..." : "Update Profile"}
-                </button>
+                <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-600 text-white w-full sm:w-auto px-6 py-2 rounded-lg font-semibold hover:bg-red-500 transition"
+                  >
+                    Logout
+                  </button>
+                  <button
+                    onClick={handleUpdate}
+                    disabled={loading}
+                    className="bg-yellow-500 text-black w-full sm:w-auto px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition"
+                  >
+                    {loading ? "Updating..." : "Update Profile"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

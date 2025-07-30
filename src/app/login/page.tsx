@@ -3,18 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { toast } from "react-toastify";
+import { Triangle } from "react-loader-spinner";
 const LoginPage = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("admin");
-  const [error, setError] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+
+    setLoading(true);
 
     console.log("Logging in with:", { email, password, role });
 
@@ -33,13 +36,14 @@ const LoginPage = () => {
       console.log("Response from server:", data);
 
       if (!res.ok) {
-        setError(data.message || "Login failed");
+        toast.error(data.message || "Login failed");
+
         console.error("Login error:", data.message || "Login failed");
         return;
       }
 
       if (!data.accessToken) {
-        setError("Token missing in response");
+        toast.error("Token missing in response");
         console.error("Token missing in response:", data);
         return;
       }
@@ -55,26 +59,32 @@ const LoginPage = () => {
         router.push("/admin/dashboard");
       } else if (role === "user") {
         console.log("Redirecting to /user/dashboard");
+
         router.push("/"); // replace with your user route
       }
     } catch (err) {
-      setError("Something went wrong");
+      toast.error("Something went wrong");
       console.error("Catch error:", err);
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <Triangle
+      visible={true}
+      height="80"
+      width="80"
+      color="#FACC15"
+      ariaLabel="triangle-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+    />
+  ) : (
     <div className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-[#0F172A] rounded-xl shadow-xl p-8">
         <h2 className="text-3xl font-bold text-center text-[#FACC15] mb-6">
           Welcome Back
         </h2>
-
-        {error && (
-          <div className="bg-red-600 text-white text-sm p-2 rounded mb-4 text-center">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>

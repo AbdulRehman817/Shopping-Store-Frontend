@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 // ✅ Type for decoded JWT token
 type TokenPayload = {
@@ -27,6 +28,7 @@ const Checkout = () => {
   });
 
   const [userId, setUserId] = useState<string | null>(null); // 🧑 Authenticated User ID
+  const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState<any[]>([]); // 🛒 Loaded Cart Items
 
   // 🔄 Load cart and decode token on component mount
@@ -77,6 +79,7 @@ const Checkout = () => {
     };
 
     try {
+      setLoading(true);
       const res = await fetch(
         "https://shopping-store-alpha-eight.vercel.app/api/v1/orders",
         {
@@ -95,11 +98,15 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error("🚨 Order Error:", error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    setLoading(true)
+  ) : (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white px-6 py-12 mt-[60px]"
       initial={{ opacity: 0 }}

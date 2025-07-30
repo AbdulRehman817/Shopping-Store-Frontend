@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import ProductCard from "@/app/components/ProductCard";
+import { Triangle } from "react-loader-spinner";
 
 interface Product {
   _id: string;
@@ -23,18 +24,22 @@ const TeamPage = () => {
   const team = Array.isArray(teamParam) ? teamParam[0] : teamParam || ""; // fallback to empty string
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true); // ✅ Loader state
+
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        if (!team) return;
+        if (!team) return setLoading(true);
         const res = await axios.get<{ products: Product[] }>(
           `https://shopping-store-alpha-eight.vercel.app/api/v1/team/${team}`
         );
         setProducts(res.data.products);
       } catch (err) {
         console.error("Error fetching:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
@@ -44,7 +49,19 @@ const TeamPage = () => {
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  return (
+  return loading ? (
+    <div className="flex justify-center mb-4">
+      <Triangle
+        visible={true}
+        height="80"
+        width="80"
+        color="#FACC15"
+        ariaLabel="triangle-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+      />
+    </div>
+  ) : (
     <div className="flex min-h-screen bg-[#0F172A] text-white">
       {/* Sidebar */}
       <aside className="w-[310px] bg-[#1E293B] px-5 py-[100px]">

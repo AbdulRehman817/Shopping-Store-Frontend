@@ -1,81 +1,87 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion"; // ✅ Correct import for framer-motion
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { Triangle } from "react-loader-spinner";
+interface SignupFormData {
+  name: string;
+  password: string;
+  email: string;
+  role: string;
+  image: File | null;
+}
 
 const Signup = () => {
   const router = useRouter();
-  // * User state to store form data
-  const [user, setUser] = useState({
+
+  const [user, setUser] = useState<SignupFormData>({
     name: "",
     password: "",
     email: "",
-    image: null as File | null,
+    role: "admin", // default role
+    image: null,
   });
 
-  // * Message state for success or error alerts
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // TODO: Update form input values (text fields)
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  // TODO: Handle image file upload and set to state
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setUser((prev) => ({ ...prev, role: e.target.value }));
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setUser((prev) => ({
-        ...prev,
-        image: file,
-      }));
+      setUser((prev) => ({ ...prev, image: file }));
     }
   };
 
-  const SubmitBtn = () => {
-    router.push("/login"); // Redirect to login page after successful Signup`
-  };
-
-  // ! Handle form submission to backend API
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // ? Prevent page reload
+    e.preventDefault();
+
+    // Basic validation
+    if (!user.name || !user.email || !user.password || !user.role) {
+      toast.warning("❌ Please fill all fields.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      const formData = new FormData(); // * To send image/file along with other data
+      const formData = new FormData();
       formData.append("name", user.name);
       formData.append("email", user.email);
       formData.append("password", user.password);
-      if (user.image) {
-        formData.append("image", user.image);
-      }
+      formData.append("role", user.role);
+      if (user.image) formData.append("image", user.image);
 
-      // * Send POST request to backend
       const response = await fetch(
         "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
         {
           method: "POST",
-          body: formData, // ! Don't manually set headers for FormData
+          body: formData,
         }
       );
 
       if (!response.ok) {
-        // ! Server responded with an error
-        setMessage("❌ Registration failed. Check your data.");
-        throw new Error("Registration failed");
+        toast.error("❌ Registration failed. Check your data.");
+        throw new Error("Failed");
       }
 
-      const data = await response.json(); // * Convert response to JSON
-      setMessage("✅ Registered successfully!"); // ? Show success message
-      console.log("Registered:", data); // @note Debug log
+      toast.success("✅ Registered successfully!");
+      setTimeout(() => router.push("/"), 1500); // redirect after 1.5s
     } catch (error) {
-      console.error("Error:", error); // ! Catch and log any errors
-      setMessage("❌ Something went wrong. Try again.");
+      console.error(error);
+      toast.error("❌ Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,7 +94,7 @@ const Signup = () => {
         transition={{ duration: 0.6 }}
       >
         <div className="w-full max-w-5xl bg-[#1E293B] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#334155]">
-          {/* Left Panel for Branding */}
+          {/* Left Panel */}
           <div className="hidden md:flex flex-col justify-center items-center bg-[#0F172A] w-1/2 p-10">
             <h2 className="text-3xl font-bold text-[#FACC15] mb-4">
               Join Our Community
@@ -98,18 +104,16 @@ const Signup = () => {
             </p>
           </div>
 
-          {/*  Right Panel with Form */}
+          {/* Form Panel */}
           <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-10">
             <h3 className="text-2xl font-bold text-[#FACC15] mb-6 text-center">
               Create Your Account
             </h3>
 
             <div className="space-y-5">
-              {/* * Name Input */}
+              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Name
-                </label>
+                <label className="block text-sm text-gray-300 mb-1">Name</label>
                 <input
                   name="name"
                   value={user.name}
@@ -120,9 +124,9 @@ const Signup = () => {
                 />
               </div>
 
-              {/* * Email Input */}
+              {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm text-gray-300 mb-1">
                   Email
                 </label>
                 <input
@@ -135,9 +139,9 @@ const Signup = () => {
                 />
               </div>
 
-              {/* * Password Input */}
+              {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm text-gray-300 mb-1">
                   Password
                 </label>
                 <input
@@ -150,9 +154,22 @@ const Signup = () => {
                 />
               </div>
 
-              {/* * Image Upload */}
+              {/* Role */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm text-gray-300 mb-1">Role</label>
+                <select
+                  value={user.role}
+                  onChange={handleRoleChange}
+                  className="w-full px-4 py-2 rounded bg-[#1E293B] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
                   Profile Image
                 </label>
                 <label className="flex flex-col items-center justify-center w-full h-32 px-4 bg-[#0F172A] text-gray-400 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-yellow-400">
@@ -171,24 +188,30 @@ const Signup = () => {
                 )}
               </div>
 
-              {/* * Submit Button */}
+              {/* Submit */}
               <button
-                onClick={SubmitBtn}
                 type="submit"
+                disabled={loading}
                 className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
               >
-                Sign Up
+                {loading && (
+                  <div className="flex justify-center mb-4">
+                    <Triangle
+                      visible={true}
+                      height="80"
+                      width="80"
+                      color="#FACC15"
+                      ariaLabel="triangle-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  </div>
+                )}
               </button>
 
-              {/* ? Show success/error message */}
-              {message && (
-                <p className="text-center text-sm mt-4 text-yellow-400">
-                  {message}
-                </p>
-              )}
+              {/* Message */}
             </div>
 
-            {/* @note Redirect to login page */}
             <p className="mt-6 text-sm text-center text-gray-400">
               Already have an account?{" "}
               <Link

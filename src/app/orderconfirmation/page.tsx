@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../Redux/cartSlice";
+import { toast } from "react-toastify";
+import { Triangle } from "react-loader-spinner";
 import type { RootState } from "../Redux/store";
 import Image from "next/image";
 
@@ -48,7 +50,6 @@ const OrderConfirmation = () => {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   /* ✅ Load cart from localStorage on mount */
   useEffect(() => {
@@ -69,7 +70,7 @@ const OrderConfirmation = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        setError("User not authenticated.");
+        toast.error("User not authenticated.");
         setLoading(false);
         return;
       }
@@ -86,7 +87,7 @@ const OrderConfirmation = () => {
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
       } catch (err: any) {
-        setError(err.message || "Failed to load orders.");
+        toast.error(err.message || "Failed to load orders.");
       } finally {
         setLoading(false);
       }
@@ -101,13 +102,19 @@ const OrderConfirmation = () => {
   if (loading)
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
-        Loading order...
+        <Triangle
+          visible={true}
+          height="80"
+          width="80"
+          color="#FACC15"
+          ariaLabel="triangle-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
       </p>
     );
 
   // * Error state
-  if (error)
-    return <p className="text-red-500 text-center mt-20 text-lg">{error}</p>;
 
   // * No orders found
   if (!orders.length)
