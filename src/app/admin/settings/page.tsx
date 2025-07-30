@@ -5,7 +5,6 @@ import AdminLayout from "@/app/components/AdminLayout";
 import { useRouter } from "next/navigation";
 
 import { ShieldCheck, Mail, UserCircle2, Crown, X } from "lucide-react";
-import axios from "axios";
 
 interface AdminUser {
   name: string;

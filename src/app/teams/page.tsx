@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Triangle } from "react-loader-spinner";
 
-const Teams = [
+const teams = [
   {
     name: "Pakistan",
     Image: "/images/Pakistan-Cricket/pakistan-jersey.png",
@@ -36,7 +36,7 @@ const Teams = [
   },
 ];
 
-const teams = () => {
+const Teams = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,7 +68,7 @@ const teams = () => {
         </motion.h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-7xl mx-auto">
-          {Teams.map((team, index) => (
+          {teams.map((team, index) => (
             <motion.div
               key={team.name}
               whileHover={{ scale: 1.05 }}
@@ -113,4 +113,4 @@ const teams = () => {
   );
 };
 
-export default teams;
+export default Teams;
