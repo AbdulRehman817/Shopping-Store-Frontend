@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        "https://shopping-store-h2vg.vercel.app/api/v1/admin/users",
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/admin/users",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -34,14 +34,14 @@ export default function AdminUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="bg-[#0F172A] p-4 sm:p-6 rounded-lg shadow-xl mt-[20px] sm:mt-[30px]">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#facc15] mb-4 sm:mb-6 border-b pb-2">
+      <div className="p-4 sm:p-6 rounded-lg shadow-xl mt-[20px] sm:mt-[30px]">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-6 border-b border-gray-700 pb-2 mt-5">
           👥 All Registered Users
         </h1>
 
-        <div className="overflow-x-auto">
+        <div className="w-full overflow-x-auto bg-[#0F172A] rounded-xl shadow-lg border border-gray-800">
           <table className="w-full min-w-[600px] border-collapse border border-gray-700 text-sm sm:text-base rounded-lg overflow-hidden">
-            <thead className="bg-[#1E293B] text-[#facc15]">
+            <thead className="text-xs uppercase bg-[#1E293B] text-gray-400">
               <tr>
                 <th className="py-2 sm:py-3 px-3 sm:px-4 text-left border-b border-gray-600">
                   Name

@@ -8,6 +8,11 @@ import { useState } from "react";
 const navItems = [
   { name: "Users", href: "/admin/users", icon: <Users size={18} /> },
   { name: "Orders", href: "/admin/orders", icon: <ClipboardList size={18} /> },
+  {
+    name: "Settings",
+    href: "/admin/settings",
+    icon: <ClipboardList size={18} />,
+  },
 ];
 
 export default function AdminLayout({

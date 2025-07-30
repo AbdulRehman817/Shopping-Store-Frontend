@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const res = await fetch(
-        "https://shopping-store-h2vg.vercel.app/api/v1/profile",
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,

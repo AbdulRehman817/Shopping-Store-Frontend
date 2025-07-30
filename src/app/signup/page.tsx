@@ -57,7 +57,7 @@ const Signup = () => {
 
       // * Send POST request to backend
       const response = await fetch(
-        "https://shopping-store-h2vg.vercel.app/api/v1/register",
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
         {
           method: "POST",
           body: formData, // ! Don't manually set headers for FormData

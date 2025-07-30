@@ -97,6 +97,8 @@ const Navbar = () => {
                 {user?.image && (
                   <Image
                     src={user.image}
+                    width={30}
+                    height={30}
                     alt="profile"
                     className="w-[30px] h-[30px] rounded-full object-cover"
                   />

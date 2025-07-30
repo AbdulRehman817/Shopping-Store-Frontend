@@ -22,14 +22,11 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     const token = localStorage.getItem("token");
-    const res = await fetch(
-      "https://shopping-store-h2vg.vercel.app/api/v1/admin/orders",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch("http://localhost:3000/api/v1/admin/orders", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await res.json();
     setOrders(data || []);
   };
@@ -40,17 +37,14 @@ export default function AdminOrdersPage() {
 
   const updateStatus = async (orderId: string, status: string) => {
     const token = localStorage.getItem("token");
-    await fetch(
-      `https://shopping-store-h2vg.vercel.app/api/v1/admin/orders/${orderId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      }
-    );
+    await fetch(`https://shopping-store-alpha-eight.vercel.app/api/v1/admin/orders/${orderId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
     fetchOrders();
   };
 

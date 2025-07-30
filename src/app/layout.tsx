@@ -7,6 +7,7 @@ import Navbar from "./Navbar/page";
 import Footer from "./footer/page";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
+import { usePathname } from "next/navigation";
 // ✅ Import fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +24,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
   useLenis(); // ✅ Global smooth scrolling using Lenis
+  const hideLayoutRoutes = ["/login", "/signup"];
+  const isHiddenLayout =
+    pathname.startsWith("/admin") || hideLayoutRoutes.includes(pathname);
 
   return (
     <html lang="en">
@@ -34,12 +40,12 @@ export default function RootLayout({
           {/* ✅ Wrap everything inside AuthProvider so Navbar and children can access user */}
           <AuthProvider>
             {/* ✅ Navbar uses user from AuthContext */}
-            <Navbar />
+            {!isHiddenLayout && <Navbar />}
 
             {children}
             {/* ✅ Footer */}
             {/* <ToastContainer position="top-right" /> */}
-            <Footer />
+            {!isHiddenLayout && <Footer />}
           </AuthProvider>
         </Provider>
       </body>

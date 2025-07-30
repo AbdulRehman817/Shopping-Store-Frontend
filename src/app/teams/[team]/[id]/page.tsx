@@ -46,7 +46,7 @@ export default function ProductDetails() {
     if (id) {
       axios
         .get<{ product: Product }>(
-          `https://shopping-store-h2vg.vercel.app/api/v1/teams/teamName/${id}`
+          `https://shopping-store-alpha-eight.vercel.app/api/v1/teams/teamName/${id}`
         )
         .then((res) => {
           setData(res.data.product);
