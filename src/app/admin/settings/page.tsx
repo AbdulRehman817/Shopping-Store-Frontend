@@ -40,7 +40,7 @@ export default function AdminSettingsPage() {
     if (!admin) return;
     setLoading(true);
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `https://shopping-store-alpha-eight.vercel.app/api/v1/admin/user/${admin._id}`,
         {
           ...formData,
