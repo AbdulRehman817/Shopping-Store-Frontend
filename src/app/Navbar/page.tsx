@@ -99,7 +99,7 @@ const Navbar = () => {
                     src={user.image}
                     width={30}
                     height={30}
-                    alt="profile"
+                    alt="profi  le"
                     className="w-[30px] h-[30px] rounded-full object-cover"
                   />
                 )}
