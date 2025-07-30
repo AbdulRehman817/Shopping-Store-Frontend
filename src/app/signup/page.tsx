@@ -28,7 +28,6 @@ image: null as File | null,
 
 });
 
-const [role, setRole] = useState("admin");
 
 // * Message state for success or error alerts
 
@@ -419,4 +418,3 @@ return (
 };
 
 export default Signup;
-
