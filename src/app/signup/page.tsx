@@ -195,7 +195,7 @@ const Signup = () => {
                 disabled={loading}
                 className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
               >
-                {loading ? "Signing Up..." : "Sign Up"}
+                {loading ? <Loader /> : "Sign Up"}
               </button>
 
               {/* Message */}
