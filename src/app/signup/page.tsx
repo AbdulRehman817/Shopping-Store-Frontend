@@ -25,8 +25,6 @@ const Signup = () => {
     image: null as File | null,
   });
 
-  const [role, setRole] = useState("admin");
-
   // * Message state for success or error alerts
 
   const [message, setMessage] = useState("");
@@ -198,11 +196,9 @@ const Signup = () => {
 
                 <select
                   value={user.role}
-                  onChange={(e) => {
-                    const selectedRole = e.target.value;
-                    setRole(selectedRole);
-                    setUser((prev) => ({ ...prev, role: selectedRole }));
-                  }}
+                  onChange={(e) =>
+                    setUser((prev) => ({ ...prev, role: e.target.value }))
+                  }
                   className="w-full px-4 py-2 rounded bg-[#1E293B] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
                 >
                   <option value="user">User</option>
