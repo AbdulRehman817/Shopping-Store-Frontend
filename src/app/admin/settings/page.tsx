@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/app/components/AdminLayout";
+import { useRouter } from "next/navigation";
+
 import { ShieldCheck, Mail, UserCircle2, Crown, X } from "lucide-react";
 import axios from "axios";
 
@@ -18,6 +20,14 @@ export default function AdminSettingsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // if you store token separately
+    router.push("/login"); // change this to your actual login route
+  };
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -133,6 +143,13 @@ export default function AdminSettingsPage() {
               <h2 className="text-2xl font-bold text-white mb-6">
                 Edit Admin Profile
               </h2>
+              <br />
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-200"
+              >
+                Logout
+              </button>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm text-gray-300 mb-1">
