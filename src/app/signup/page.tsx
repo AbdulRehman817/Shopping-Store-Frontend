@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+
 import Loader from "../components/Loader";
 
 interface SignupFormData {
@@ -27,69 +27,54 @@ const Signup = () => {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setUser((prev) => ({ ...prev, role: e.target.value }));
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUser((prev) => ({ ...prev, image: file }));
-    }
-  };
+const [errorMessage, setErrorMessage] = useState("");
+const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!user.name || !user.email || !user.password || !user.role) {
-      toast.warning("❌ Please fill all fields.");
+  setErrorMessage(""); // Clear previous errors
+  setSuccessMessage("");
+
+  if (!user.name || !user.email || !user.password || !user.role) {
+    setErrorMessage("Please fill all fields.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("password", user.password);
+    formData.append("role", user.role);
+    if (user.image) formData.append("image", user.image);
+
+    const response = await fetch(
+      "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      setErrorMessage("Registration failed. " + errorText);
       return;
     }
 
-    setLoading(true);
+    setSuccessMessage("Registered successfully!");
+    router.push("/");
 
-    try {
-      const formData = new FormData();
-      formData.append("name", user.name);
-      formData.append("email", user.email);
-      formData.append("password", user.password);
-      formData.append("role", user.role);
-      if (user.image) formData.append("image", user.image);
-
-      const response = await fetch(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        toast.error("❌ Registration failed. Check your data.");
-        return;
-      }
-
-      toast.success("✅ Registered successfully!");
-
-      // Redirect based on role
-      if (user.role === "admin") {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("❌ Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.error(error);
+    setErrorMessage("Something went wrong. Try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -117,7 +102,13 @@ const Signup = () => {
             </h3>
 
             <div className="space-y-5">
-              {/* Name */}
+              {errorMessage && (
+  <p className="text-red-400 text-sm text-center">{errorMessage}</p>
+)}
+
+{successMessage && (
+  <p className="text-green-400 text-sm text-center">{successMessage}</p>
+)}
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Name</label>
                 <input
