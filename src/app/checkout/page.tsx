@@ -82,7 +82,7 @@ const Checkout = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/orders",
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/admin/orders",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

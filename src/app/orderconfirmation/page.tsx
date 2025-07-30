@@ -81,7 +81,7 @@ const OrderConfirmation = () => {
         const userId = decoded.userId;
 
         const res = await fetch(
-          `https://shopping-store-alpha-eight.vercel.app/api/v1/user/${userId}`
+          `https://shopping-store-alpha-eight.vercel.app/api/v1/admin/user/${userId}`
         );
         const data = await res.json();
 
