@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 // ✅ Type for decoded JWT token
 type TokenPayload = {
@@ -105,7 +106,7 @@ const Checkout = () => {
   };
 
   return loading ? (
-    setLoading(true)
+    <Loader />
   ) : (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white px-6 py-12 mt-[60px]"

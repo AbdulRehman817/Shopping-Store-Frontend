@@ -8,9 +8,10 @@ import { CheckCircle } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../Redux/cartSlice";
 import { toast } from "react-toastify";
-import { Triangle } from "react-loader-spinner";
+
 import type { RootState } from "../Redux/store";
 import Image from "next/image";
+import Loader from "../components/Loader";
 
 /* ------------------------------------
 🧾 Type Definitions
@@ -102,15 +103,7 @@ const OrderConfirmation = () => {
   if (loading)
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
-        <Triangle
-          visible={true}
-          height="80"
-          width="80"
-          color="#FACC15"
-          ariaLabel="triangle-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
+        <Loader />
       </p>
     );
 

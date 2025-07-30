@@ -11,6 +11,7 @@ import { Minus, ShoppingCart, Plus, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import Loader from "@/app/components/Loader";
 
 interface Product {
   _id: string;
@@ -91,7 +92,11 @@ export default function ProductDetails() {
 
   if (!data) return <p className="text-white p-4">Loading product...</p>;
 
-  return (
+  return isLoading ? (
+    <div className="flex justify-center mb-4">
+      <Loader />
+    </div>
+  ) : (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white px-4 py-16 flex flex-col lg:flex-row items-start gap-16"
       initial={{ opacity: 0 }}

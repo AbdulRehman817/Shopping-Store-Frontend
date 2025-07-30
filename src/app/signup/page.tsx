@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { Triangle } from "react-loader-spinner";
+import Loader from "../components/Loader";
+
 interface SignupFormData {
   name: string;
   password: string;
@@ -196,15 +197,7 @@ const Signup = () => {
               >
                 {loading && (
                   <div className="flex justify-center mb-4">
-                    <Triangle
-                      visible={true}
-                      height="80"
-                      width="80"
-                      color="#FACC15"
-                      ariaLabel="triangle-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                    />
+                    <Loader />
                   </div>
                 )}
               </button>

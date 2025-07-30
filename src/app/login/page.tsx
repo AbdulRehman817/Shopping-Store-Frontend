@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { Triangle } from "react-loader-spinner";
+import Loader from "../components/Loader";
+
 const LoginPage = () => {
   const router = useRouter();
 
@@ -70,15 +71,9 @@ const LoginPage = () => {
   };
 
   return loading ? (
-    <Triangle
-      visible={true}
-      height="80"
-      width="80"
-      color="#FACC15"
-      ariaLabel="triangle-loading"
-      wrapperStyle={{}}
-      wrapperClass=""
-    />
+    <div className="flex justify-center mb-4">
+      <Loader />
+    </div>
   ) : (
     <div className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-[#0F172A] rounded-xl shadow-xl p-8">

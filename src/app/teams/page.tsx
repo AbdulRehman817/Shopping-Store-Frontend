@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Triangle } from "react-loader-spinner";
+import Loader from "../components/Loader";
 
 const teams = [
   {
@@ -46,15 +46,9 @@ const Teams = () => {
     return () => clearTimeout(timer);
   }, []);
   return loading ? (
-    <Triangle
-      visible={true}
-      height="80"
-      width="80"
-      color="#FACC15"
-      ariaLabel="triangle-loading"
-      wrapperStyle={{}}
-      wrapperClass=""
-    />
+    <div className="flex justify-center mb-4">
+      <Loader />
+    </div>
   ) : (
     <>
       <section className="min-h-screen bg-[#1E293B] px-4 py-20 text-white">

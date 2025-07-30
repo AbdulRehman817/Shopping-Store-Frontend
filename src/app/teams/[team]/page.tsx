@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import ProductCard from "@/app/components/ProductCard";
-import { Triangle } from "react-loader-spinner";
+import Loader from "@/app/components/Loader";
 
 interface Product {
   _id: string;
@@ -51,15 +51,7 @@ const TeamPage = () => {
 
   return loading ? (
     <div className="flex justify-center mb-4">
-      <Triangle
-        visible={true}
-        height="80"
-        width="80"
-        color="#FACC15"
-        ariaLabel="triangle-loading"
-        wrapperStyle={{}}
-        wrapperClass=""
-      />
+      <Loader />
     </div>
   ) : (
     <div className="flex min-h-screen bg-[#0F172A] text-white">
