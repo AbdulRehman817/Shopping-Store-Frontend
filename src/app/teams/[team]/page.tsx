@@ -33,7 +33,7 @@ const TeamPage = () => {
       try {
         if (!team) return setLoading(true);
         const res = await axios.get<{ products: Product[] }>(
-          `https://shopping-store-alpha-eight.vercel.app/api/v1/team/${team}`
+          `https://shopping-store-bqd2.vercel.app/api/v1/team/${team}`
         );
         setProducts(res.data.products);
       } catch (err) {

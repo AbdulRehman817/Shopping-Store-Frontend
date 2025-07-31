@@ -23,7 +23,7 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     const token = localStorage.getItem("token");
     const res = await fetch(
-      "https://shopping-store-alpha-eight.vercel.app/api/v1/admin/orders",
+      "https://shopping-store-bqd2.vercel.app/api/v1/admin/orders",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default function AdminOrdersPage() {
   const updateStatus = async (orderId: string, status: string) => {
     const token = localStorage.getItem("token");
     await fetch(
-      `https://shopping-store-alpha-eight.vercel.app/api/v1/admin/orders/${orderId}`,
+      `https://shopping-store-bqd2.vercel.app/api/v1/admin/orders/${orderId}`,
       {
         method: "PUT",
         headers: {

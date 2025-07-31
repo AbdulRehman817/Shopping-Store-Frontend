@@ -21,7 +21,7 @@ const LoginPage = () => {
 
     try {
       const res = await fetch(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/login",
+        "https://shopping-store-bqd2.vercel.app/api/v1/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
