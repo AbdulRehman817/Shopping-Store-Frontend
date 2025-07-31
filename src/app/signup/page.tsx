@@ -1,33 +1,25 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion"; // ✅ Correct import for framer-motion
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
-// Type for user state
-interface SignupUser {
-  name: string;
-  email: string;
-  password: string;
-  image: File | null;
-}
-
-const Signup: React.FC = () => {
+const Signup = () => {
   const router = useRouter();
-
-  const [user, setUser] = useState<SignupUser>({
+  // * User state to store form data
+  const [user, setUser] = useState({
     name: "",
-    email: "",
     password: "",
-    image: null,
+    email: "",
+    image: null as File | null,
   });
 
-  const [message, setMessage] = useState<string>("");
+  // * Message state for success or error alerts
+  const [message, setMessage] = useState("");
 
-  // Handle text input changes
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+  // TODO: Update form input values (text fields)
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((prev) => ({
       ...prev,
@@ -35,21 +27,27 @@ const Signup: React.FC = () => {
     }));
   };
 
-  // Handle image file upload
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    setUser((prev) => ({
-      ...prev,
-      image: file,
-    }));
+  // TODO: Handle image file upload and set to state
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUser((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const SubmitBtn = () => {
+    router.push("/login"); // Redirect to login page after successful Signup`
+  };
+
+  // ! Handle form submission to backend API
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // ? Prevent page reload
 
     try {
-      const formData = new FormData();
+      const formData = new FormData(); // * To send image/file along with other data
       formData.append("name", user.name);
       formData.append("email", user.email);
       formData.append("password", user.password);
@@ -57,29 +55,27 @@ const Signup: React.FC = () => {
         formData.append("image", user.image);
       }
 
-      const response = await axios.post(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/register", // or full URL if needed
-        formData,
+      // * Send POST request to backend
+      const response = await fetch(
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          method: "POST",
+          body: formData, // ! Don't manually set headers for FormData
         }
       );
 
-      const data = response.data;
+      if (!response.ok) {
+        // ! Server responded with an error
+        setMessage("❌ Registration failed. Check your data.");
+        throw new Error("Registration failed");
+      }
 
-      setMessage("✅ Registered successfully!");
-      console.log("Registered:", data);
-
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500);
-    } catch (error: any) {
-      console.error("Error:", error);
-      const errorMessage =
-        error.response?.data?.message || "❌ Something went wrong. Try again.";
-      setMessage(errorMessage);
+      const data = await response.json(); // * Convert response to JSON
+      setMessage("✅ Registered successfully!"); // ? Show success message
+      console.log("Registered:", data); // @note Debug log
+    } catch (error) {
+      console.error("Error:", error); // ! Catch and log any errors
+      setMessage("❌ Something went wrong. Try again.");
     }
   };
 
@@ -102,13 +98,14 @@ const Signup: React.FC = () => {
             </p>
           </div>
 
-          {/* Right Panel with Form */}
+          {/*  Right Panel with Form */}
           <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-10">
             <h3 className="text-2xl font-bold text-[#FACC15] mb-6 text-center">
               Create Your Account
             </h3>
+
             <div className="space-y-5">
-              {/* Name Input */}
+              {/* * Name Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Name
@@ -120,11 +117,10 @@ const Signup: React.FC = () => {
                   type="text"
                   placeholder="John Doe"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                  required
                 />
               </div>
 
-              {/* Email Input */}
+              {/* * Email Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Email
@@ -136,11 +132,10 @@ const Signup: React.FC = () => {
                   type="email"
                   placeholder="you@example.com"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                  required
                 />
               </div>
 
-              {/* Password Input */}
+              {/* * Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Password
@@ -152,11 +147,10 @@ const Signup: React.FC = () => {
                   type="password"
                   placeholder="••••••••"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                  required
                 />
               </div>
 
-              {/* Image Upload */}
+              {/* * Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Profile Image
@@ -168,7 +162,6 @@ const Signup: React.FC = () => {
                     accept="image/*"
                     onChange={handleImageChange}
                     className="hidden"
-                    required
                   />
                 </label>
                 {user.image && (
@@ -178,15 +171,16 @@ const Signup: React.FC = () => {
                 )}
               </div>
 
-              {/* Submit Button */}
+              {/* * Submit Button */}
               <button
+                onClick={SubmitBtn}
                 type="submit"
                 className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
               >
                 Sign Up
               </button>
 
-              {/* Show success/error message */}
+              {/* ? Show success/error message */}
               {message && (
                 <p className="text-center text-sm mt-4 text-yellow-400">
                   {message}
@@ -194,7 +188,7 @@ const Signup: React.FC = () => {
               )}
             </div>
 
-            {/* Redirect to login page */}
+            {/* @note Redirect to login page */}
             <p className="mt-6 text-sm text-center text-gray-400">
               Already have an account?{" "}
               <Link
@@ -210,4 +204,5 @@ const Signup: React.FC = () => {
     </form>
   );
 };
+
 export default Signup;
