@@ -1,61 +1,50 @@
 "use client";
 
-import { useState } from "react";
-
-import { motion } from "framer-motion"; // ✅ Correct import for framer-motion
-
+import { useState, ChangeEvent, FormEvent } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
 
-const Signup = () => {
+// Type for user state
+interface SignupUser {
+  name: string;
+  email: string;
+  password: string;
+  image: File | null;
+}
+
+const Signup: React.FC = () => {
   const router = useRouter();
 
-  // * User state to store form data
-
-  const [user, setUser] = useState({
+  const [user, setUser] = useState<SignupUser>({
     name: "",
-
-    password: "",
-
     email: "",
-
-    image: null as File | null,
+    password: "",
+    image: null,
   });
 
-  // * Message state for success or error alerts
+  const [message, setMessage] = useState<string>("");
 
-  const [message, setMessage] = useState("");
-
-  // TODO: Update form input values (text fields)
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle text input changes
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setUser((prev) => ({
       ...prev,
-
       [name]: value,
     }));
   };
 
-  // TODO: Handle image file upload and set to state
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      setUser((prev) => ({
-        ...prev,
-
-        image: file,
-      }));
-    }
+  // Handle image file upload
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setUser((prev) => ({
+      ...prev,
+      image: file,
+    }));
   };
 
-  // ! Handle form submission to backend API
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -75,21 +64,19 @@ const Signup = () => {
         }
       );
 
+      const data: { message?: string; user?: any } = await response.json();
+
       if (!response.ok) {
-        setMessage("❌ Registration failed. Check your data.");
-        throw new Error("Registration failed");
+        setMessage(data.message || "❌ Registration failed. Check your data.");
+        throw new Error(data.message || "Registration failed");
       }
 
-      const data = await response.json();
-
       setMessage("✅ Registered successfully!");
-
       console.log("Registered:", data);
 
-      // ✅ Redirect to login after short delay
       setTimeout(() => {
         router.push("/login");
-      }, 1500); // optional 1.5s delay to show message
+      }, 1500);
     } catch (error) {
       console.error("Error:", error);
       setMessage("❌ Something went wrong. Try again.");
@@ -106,32 +93,26 @@ const Signup = () => {
       >
         <div className="w-full max-w-5xl bg-[#1E293B] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#334155]">
           {/* Left Panel for Branding */}
-
           <div className="hidden md:flex flex-col justify-center items-center bg-[#0F172A] w-1/2 p-10">
             <h2 className="text-3xl font-bold text-[#FACC15] mb-4">
               Join Our Community
             </h2>
-
             <p className="text-gray-400 text-center">
               Sign up to get access to exclusive offers, new arrivals, and more.
             </p>
           </div>
 
-          {/*  Right Panel with Form */}
-
+          {/* Right Panel with Form */}
           <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-10">
             <h3 className="text-2xl font-bold text-[#FACC15] mb-6 text-center">
               Create Your Account
             </h3>
-
             <div className="space-y-5">
-              {/* * Name Input */}
-
+              {/* Name Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Name
                 </label>
-
                 <input
                   name="name"
                   value={user.name}
@@ -139,16 +120,15 @@ const Signup = () => {
                   type="text"
                   placeholder="John Doe"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+                  required
                 />
               </div>
 
-              {/* * Email Input */}
-
+              {/* Email Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Email
                 </label>
-
                 <input
                   name="email"
                   value={user.email}
@@ -156,16 +136,15 @@ const Signup = () => {
                   type="email"
                   placeholder="you@example.com"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+                  required
                 />
               </div>
 
-              {/* * Password Input */}
-
+              {/* Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Password
                 </label>
-
                 <input
                   name="password"
                   value={user.password}
@@ -173,27 +152,25 @@ const Signup = () => {
                   type="password"
                   placeholder="••••••••"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
+                  required
                 />
               </div>
 
-              {/* * Image Upload */}
-
+              {/* Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
                   Profile Image
                 </label>
-
                 <label className="flex flex-col items-center justify-center w-full h-32 px-4 bg-[#0F172A] text-gray-400 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-yellow-400">
                   <span>Click to upload image</span>
-
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
                     className="hidden"
+                    required
                   />
                 </label>
-
                 {user.image && (
                   <p className="text-sm text-gray-400 mt-2">
                     Selected: {user.image.name}
@@ -201,8 +178,7 @@ const Signup = () => {
                 )}
               </div>
 
-              {/* * Submit Button */}
-
+              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
@@ -210,8 +186,7 @@ const Signup = () => {
                 Sign Up
               </button>
 
-              {/* ? Show success/error message */}
-
+              {/* Show success/error message */}
               {message && (
                 <p className="text-center text-sm mt-4 text-yellow-400">
                   {message}
@@ -219,8 +194,7 @@ const Signup = () => {
               )}
             </div>
 
-            {/* @note Redirect to login page */}
-
+            {/* Redirect to login page */}
             <p className="mt-6 text-sm text-center text-gray-400">
               Already have an account?{" "}
               <Link
@@ -236,5 +210,3 @@ const Signup = () => {
     </form>
   );
 };
-
-export default Signup;
