@@ -20,8 +20,6 @@ const Signup = () => {
 
     email: "",
 
-    role: "",
-
     image: null as File | null,
   });
 
@@ -72,8 +70,6 @@ const Signup = () => {
       formData.append("email", user.email);
 
       formData.append("password", user.password);
-
-      formData.append("role", user.role);
 
       if (user.image) {
         formData.append("image", user.image);
@@ -189,22 +185,6 @@ const Signup = () => {
                   placeholder="••••••••"
                   className="w-full bg-[#0F172A] border border-gray-600 px-4 py-2 rounded-lg placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm mb-1 text-gray-300">Role</label>
-
-                <select
-                  value={user.role}
-                  onChange={(e) =>
-                    setUser((prev) => ({ ...prev, role: e.target.value }))
-                  }
-                  className="w-full px-4 py-2 rounded bg-[#1E293B] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#FACC15]"
-                >
-                  <option value="user">User</option>
-
-                  <option value="admin">Admin</option>
-                </select>
               </div>
 
               {/* * Image Upload */}
