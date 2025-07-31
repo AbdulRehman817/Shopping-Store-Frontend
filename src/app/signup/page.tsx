@@ -53,56 +53,45 @@ const Signup = () => {
     }
   };
 
-  const SubmitBtn = () => {
-    router.push("/"); // Redirect to login page after successful Signup`
-  };
-
   // ! Handle form submission to backend API
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // ? Prevent page reload
+    e.preventDefault();
 
     try {
-      const formData = new FormData(); // * To send image/file along with other data
-
+      const formData = new FormData();
       formData.append("name", user.name);
-
       formData.append("email", user.email);
-
       formData.append("password", user.password);
-
       if (user.image) {
         formData.append("image", user.image);
       }
 
-      // * Send POST request to backend
-
       const response = await fetch(
         "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
-
         {
           method: "POST",
-
-          body: formData, // ! Don't manually set headers for FormData
+          body: formData,
         }
       );
 
       if (!response.ok) {
-        // ! Server responded with an error
-
         setMessage("❌ Registration failed. Check your data.");
-
         throw new Error("Registration failed");
       }
 
-      const data = await response.json(); // * Convert response to JSON
+      const data = await response.json();
 
-      setMessage("✅ Registered successfully!"); // ? Show success message
+      setMessage("✅ Registered successfully!");
 
-      console.log("Registered:", data); // @note Debug log
+      console.log("Registered:", data);
+
+      // ✅ Redirect to login after short delay
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500); // optional 1.5s delay to show message
     } catch (error) {
-      console.error("Error:", error); // ! Catch and log any errors
-
+      console.error("Error:", error);
       setMessage("❌ Something went wrong. Try again.");
     }
   };
@@ -215,7 +204,6 @@ const Signup = () => {
               {/* * Submit Button */}
 
               <button
-                onClick={SubmitBtn}
                 type="submit"
                 className="w-full bg-[#E11D48] hover:bg-pink-600 transition text-white py-2 rounded-lg font-semibold"
               >
