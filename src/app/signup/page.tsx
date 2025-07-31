@@ -210,3 +210,4 @@ const Signup: React.FC = () => {
     </form>
   );
 };
+export default Signup;
