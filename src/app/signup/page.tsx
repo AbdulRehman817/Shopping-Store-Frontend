@@ -4,6 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 // Type for user state
 interface SignupUser {
@@ -56,20 +57,17 @@ const Signup: React.FC = () => {
         formData.append("image", user.image);
       }
 
-      const response = await fetch(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/register",
+      const response = await axios.post(
+        "https://shopping-store-alpha-eight.vercel.app/api/v1/register", // or full URL if needed
+        formData,
         {
-          method: "POST",
-          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      const data: { message?: string; user?: any } = await response.json();
-
-      if (!response.ok) {
-        setMessage(data.message || "❌ Registration failed. Check your data.");
-        throw new Error(data.message || "Registration failed");
-      }
+      const data = response.data;
 
       setMessage("✅ Registered successfully!");
       console.log("Registered:", data);
@@ -77,9 +75,11 @@ const Signup: React.FC = () => {
       setTimeout(() => {
         router.push("/login");
       }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
-      setMessage("❌ Something went wrong. Try again.");
+      const errorMessage =
+        error.response?.data?.message || "❌ Something went wrong. Try again.";
+      setMessage(errorMessage);
     }
   };
 
