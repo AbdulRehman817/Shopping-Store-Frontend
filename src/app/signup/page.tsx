@@ -202,9 +202,7 @@ const Register = () => {
         `https://shopping-store-bqd2.vercel.app/api/v1/register`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+
           body: formData,
         }
       );
