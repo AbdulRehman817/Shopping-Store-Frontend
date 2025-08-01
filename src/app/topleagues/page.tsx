@@ -54,6 +54,8 @@ const TopLeagues = () => {
               <Image
                 src={league.image}
                 alt={league.name}
+                width={500}
+                height={500}
                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black/60" />

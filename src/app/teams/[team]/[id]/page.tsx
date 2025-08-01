@@ -108,6 +108,8 @@ export default function ProductDetails() {
         <Image
           src={data.image}
           alt={data.name}
+          width={500}
+          height={500}
           className="w-full max-w-md rounded-xl shadow-2xl object-contain bg-white p-4 transition-transform duration-300 group-hover:scale-105"
         />
       </div>

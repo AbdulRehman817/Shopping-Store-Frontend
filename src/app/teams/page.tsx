@@ -75,6 +75,8 @@ const Teams = () => {
                   <div className="relative h-56 bg-[#0F172A] flex items-center justify-center p-6">
                     <Image
                       src={team.Image}
+                      width={500}
+                      height={500}
                       alt={team.name}
                       className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
                     />
