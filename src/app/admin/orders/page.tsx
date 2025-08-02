@@ -30,8 +30,18 @@ export default function AdminOrdersPage() {
         },
       }
     );
-    const data = await res.json();
-    setOrders(data || []);
+    try {
+      const data = await res.json();
+      if (Array.isArray(data.orders)) {
+        setOrders(data.orders);
+      } else {
+        setOrders([]);
+        console.error("API response does not contain 'orders' array:", data);
+      }
+    } catch (error) {
+      setOrders([]);
+      console.error("Failed to fetch orders:", error);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +51,7 @@ export default function AdminOrdersPage() {
   const updateStatus = async (orderId: string, status: string) => {
     const token = localStorage.getItem("token");
     await fetch(
-      `https://shopping-store-bqd2.vercel.app/api/v1/admin/orders/${orderId}`,
+      `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/orders/${orderId}`,
       {
         method: "PUT",
         headers: {
