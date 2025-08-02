@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import AdminLayout from "@/app/components/AdminLayout";
 
 interface User {
@@ -64,7 +65,12 @@ export default function AdminUsersPage() {
                   <td className="py-2 sm:py-3 px-3 sm:px-4">{user.name}</td>
                   <td className="py-2 sm:py-3 px-3 sm:px-4">{user.email}</td>
                   <td className="py-2 sm:py-3 px-3 sm:px-4 capitalize">
-                    {user.image}
+                    <Image
+                      src={user.image}
+                      alt={user.name}
+                      width={50}
+                      height={50}
+                    />
                   </td>
                 </tr>
               ))}
