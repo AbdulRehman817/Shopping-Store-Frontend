@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
+import Loader from "../components/Loader";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -33,6 +34,16 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
         return;
       }
 
+      const user = JSON.parse(localUserString);
+      if (user?.role === "admin") {
+        const isAlreadyOnDashboard =
+          window.location.pathname.startsWith("/admin");
+        if (!isAlreadyOnDashboard) {
+          router.push("/admin/dashboard");
+          return;
+        }
+      }
+
       // ✅ Do NOT redirect based on role here
     } catch (err) {
       console.error("Auth error:", err);
@@ -48,7 +59,7 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
   if (checkingAuth) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <Loader />
       </div>
     ); // You can use a spinner here
   }

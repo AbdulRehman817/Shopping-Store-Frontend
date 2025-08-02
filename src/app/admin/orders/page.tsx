@@ -32,11 +32,11 @@ export default function AdminOrdersPage() {
     );
     try {
       const data = await res.json();
-      if (Array.isArray(data.orders)) {
+      if (Array.isArray(data)) {
         setOrders(data);
+        console.error(data);
       } else {
         setOrders([]);
-        console.error("API response does not contain 'orders' array:", data);
       }
     } catch (error) {
       setOrders([]);

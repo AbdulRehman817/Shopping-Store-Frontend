@@ -44,6 +44,7 @@ const LoginPage = () => {
       fetchUser();
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.data));
+      localStorage.setItem("role", data.data.role);
 
       // Redirect based on role
       if (role === "admin") {
