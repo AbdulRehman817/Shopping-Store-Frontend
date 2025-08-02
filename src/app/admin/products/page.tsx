@@ -65,58 +65,49 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* Products Grid */}
-      {loading ? (
-        <div className="flex items-center justify-center h-48">
-          <Loader className="animate-spin text-yellow-400" size={32} />
-        </div>
-      ) : products.length === 0 ? (
-        <p className="text-gray-400">No products found.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div
-              key={product._id}
-              className="bg-[#0F172A] border border-gray-700 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition"
-            >
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={400}
-                height={250}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-4 space-y-1">
-                <h3 className="text-xl font-semibold text-yellow-400">
-                  {product.name}
-                </h3>
-                <p className="text-gray-400 text-sm">{product.description}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-lg font-bold text-green-400">
-                    ${product.price}
-                  </span>
-                  <span className="text-sm bg-gray-700 px-2 py-1 rounded-md text-white">
-                    Stock: {product.stock}
-                  </span>
-                </div>
-                <div className="text-sm text-gray-400 mt-2">
-                  <p>Type: {product.type}</p>
-                  <p>Color: {product.color}</p>
-                  <p>Team: {product.team}</p>
-                </div>
-                <div className="flex justify-end gap-2 mt-3">
-                  <button className="text-sm px-3 py-1 rounded bg-yellow-400 text-black hover:bg-yellow-300 transition">
-                    Edit
-                  </button>
-                  <button className="text-sm px-3 py-1 rounded bg-red-600 text-white hover:bg-red-500 transition">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="overflow-x-auto mt-6">
+        {loading ? (
+          <p className="text-white">Loading products...</p>
+        ) : products.length === 0 ? (
+          <p className="text-white">No products available.</p>
+        ) : (
+          <table className="min-w-full bg-[#0F172A] text-white rounded-lg overflow-hidden shadow-md">
+            <thead className="bg-[#1E293B]">
+              <tr>
+                <th className="text-left p-3">Image</th>
+                <th className="text-left p-3">Name</th>
+                <th className="text-left p-3">Price</th>
+                <th className="text-left p-3">Stock</th>
+                <th className="text-left p-3">Type</th>
+                <th className="text-left p-3">Team</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr
+                  key={product._id}
+                  className="border-b border-gray-700 hover:bg-gray-800"
+                >
+                  <td className="p-3">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      width={50}
+                      height={50}
+                      className="rounded"
+                    />
+                  </td>
+                  <td className="p-3">{product.name}</td>
+                  <td className="p-3">${product.price.toFixed(2)}</td>
+                  <td className="p-3">{product.stock}</td>
+                  <td className="p-3">{product.type}</td>
+                  <td className="p-3">{product.team}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
