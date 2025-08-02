@@ -2,11 +2,19 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/app/components/AdminLayout";
-
+interface OrderItem {
+  _id: string;
+  quantity: number;
+  productId: {
+    _id: string;
+    name: string;
+  };
+}
 interface Order {
   _id: string;
   shippingInfo: {
     fullName: string;
+    items: OrderItem[];
     email: string;
     address: string;
     phone: string;
@@ -81,6 +89,7 @@ export default function AdminOrdersPage() {
                 <th className="p-3 sm:p-4">Total</th>
                 <th className="p-3 sm:p-4">Date</th>
                 <th className="p-3 sm:p-4">Status</th>
+                <th className="p-3 text-left text-sm font-semibold">Items</th>
                 <th className="p-3 sm:p-4">Update</th>
               </tr>
             </thead>
@@ -95,6 +104,7 @@ export default function AdminOrdersPage() {
                   </td>
                   <td className="p-3 sm:p-4">{order.shippingInfo?.email}</td>
                   <td className="p-3 sm:p-4">{order.shippingInfo?.address}</td>
+
                   <td className="p-3 sm:p-4 text-green-400">
                     ${order.totalAmount}
                   </td>
@@ -116,6 +126,16 @@ export default function AdminOrdersPage() {
                     >
                       {order.status}
                     </span>
+                  </td>
+                  <td className="p-3 sm:p-4">
+                    <ul className="space-y-1">
+                      {order.shippingInfo?.items?.map((item) => (
+                        <li key={item._id} className="text-sm text-gray-300">
+                          {item.productId?.name || item.productId?._id} ×{" "}
+                          {item.quantity}
+                        </li>
+                      ))}
+                    </ul>
                   </td>
                   <td className="p-3 sm:p-4">
                     <select
@@ -144,3 +164,107 @@ export default function AdminOrdersPage() {
     </AdminLayout>
   );
 }
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import Link from "next/link";
+// import { FaEdit } from "react-icons/fa";
+// import { MdDelete } from "react-icons/md";
+
+// interface OrderItem {
+//   _id: string;
+//   quantity: number;
+//   productId: {
+//     _id: string;
+//     name: string;
+//   };
+// }
+
+// interface Order {
+//   _id: string;
+//   shippingInfo: {
+//     fullName: string;
+//     email: string;
+//     address: string;
+//     phone: string;
+//     items: OrderItem[];
+//   };
+//   totalAmount: number;
+//   orderStatus: string;
+//   createdAt: string;
+// }
+
+// const OrdersPage = () => {
+//   const [orders, setOrders] = useState<Order[]>([]);
+
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       try {
+//         const res = await axios.get("/api/v1/order/all");
+//         setOrders(res.data.orders);
+//       } catch (err) {
+//         console.error("Error fetching orders:", err);
+//       }
+//     };
+
+//     fetchOrders();
+//   }, []);
+
+//   return (
+//     <div className="overflow-x-auto mt-5">
+//       <h1 className="text-2xl font-bold text-white mb-4">All Orders</h1>
+//       <table className="min-w-full divide-y divide-gray-700 bg-[#111827] shadow-md rounded-lg overflow-hidden">
+//         <thead className="bg-[#1F2937] text-gray-300">
+//           <tr>
+//             <th className="p-3 text-left text-sm font-semibold">Name</th>
+//             <th className="p-3 text-left text-sm font-semibold">Email</th>
+//             <th className="p-3 text-left text-sm font-semibold">Address</th>
+//             <th className="p-3 text-left text-sm font-semibold">Items</th>
+//             <th className="p-3 text-left text-sm font-semibold">Total</th>
+//             <th className="p-3 text-left text-sm font-semibold">Status</th>
+//             <th className="p-3 text-left text-sm font-semibold">Update</th>
+//           </tr>
+//         </thead>
+//         <tbody className="divide-y divide-gray-700 text-white">
+//           {orders.map((order) => (
+//             <tr
+//               key={order._id}
+//               className="border-b border-gray-700 hover:bg-[#1F2937] transition duration-200"
+//             >
+//               <td className="p-3 sm:p-4 font-semibold">{order.shippingInfo?.fullName}</td>
+//               <td className="p-3 sm:p-4">{order.shippingInfo?.email}</td>
+//               <td className="p-3 sm:p-4">{order.shippingInfo?.address}</td>
+//               <td className="p-3 sm:p-4">
+//                 <ul className="space-y-1">
+//                   {order.shippingInfo?.items?.map((item) => (
+//                     <li key={item._id} className="text-sm text-gray-300">
+//                       {item.productId?.name || item.productId?._id} × {item.quantity}
+//                     </li>
+//                   ))}
+//                 </ul>
+//               </td>
+//               <td className="p-3 sm:p-4 text-green-400">
+//                 ${order.totalAmount.toFixed(2)}
+//               </td>
+//               <td className="p-3 sm:p-4 capitalize text-yellow-400">
+//                 {order.orderStatus}
+//               </td>
+//               <td className="p-3 sm:p-4">
+//                 <Link
+//                   href={`/admin/updateorder/${order._id}`}
+//                   className="text-blue-500 hover:text-blue-700"
+//                 >
+//                   <FaEdit />
+//                 </Link>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default OrdersPage;
