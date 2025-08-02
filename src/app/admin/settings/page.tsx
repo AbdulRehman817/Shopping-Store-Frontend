@@ -23,8 +23,10 @@ export default function AdminSettingsPage() {
   const router = useRouter();
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("token"); // if you store token separately
+    localStorage.removeItem("cart");
+
     router.push("/login"); // change this to your actual login route
   };
 
