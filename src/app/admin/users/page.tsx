@@ -7,6 +7,7 @@ import AdminLayout from "@/app/components/AdminLayout";
 interface User {
   _id: string;
   name: string;
+  image: string;
   email: string;
   role: string;
 }
@@ -50,7 +51,7 @@ export default function AdminUsersPage() {
                   Email
                 </th>
                 <th className="py-2 sm:py-3 px-3 sm:px-4 text-left border-b border-gray-600">
-                  Role
+                  Image
                 </th>
               </tr>
             </thead>
@@ -63,7 +64,7 @@ export default function AdminUsersPage() {
                   <td className="py-2 sm:py-3 px-3 sm:px-4">{user.name}</td>
                   <td className="py-2 sm:py-3 px-3 sm:px-4">{user.email}</td>
                   <td className="py-2 sm:py-3 px-3 sm:px-4 capitalize">
-                    {user.role}
+                    {user.image}
                   </td>
                 </tr>
               ))}
