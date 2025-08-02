@@ -20,7 +20,7 @@ interface AuthContextType {
   token: string | null;
   user: User | null;
   isLoggedIn: boolean;
-  saveToken: (token: string) => void;
+  saveToken: (token: string, user: User) => void;
   LogoutUser: () => void;
   storetokenInLocalStorage: (accessToken: string | null) => void;
   fetchUser: () => void; // ✅ add this line
@@ -56,11 +56,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   // ? Jab login hota hai to token save karte hain
-  const saveToken = (newToken: string) => {
+  const saveToken = (newToken: string, newUser: User) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("token", newToken); // token ko localStorage mein save kiya
+      localStorage.setItem("token", newToken);
+      localStorage.setItem("user", JSON.stringify(newUser));
     }
-    setToken(newToken); // token ko state mein bhi update kiya
+    setToken(newToken);
+    setUser(newUser);
   };
 
   // ? Logout karne par token aur user dono clear kar dete hain

@@ -38,7 +38,9 @@ const LoginPage = () => {
         setLoading(false); // ← fix here
         return;
       }
-      saveToken(data.accessToken);
+      saveToken(data.accessToken, data.data); // ✅ pass both token and user object
+      console.log("Login successful:", data);
+      toast.success("Login successful!");
       fetchUser();
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.data));

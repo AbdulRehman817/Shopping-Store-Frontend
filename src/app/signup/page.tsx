@@ -4,6 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import Loader from "../components/Loader";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useAuth } from "../AuthContext/authcontext";
 interface SignupForm {
   name: string;
   email: string;
@@ -13,6 +14,7 @@ interface SignupForm {
 const SignupPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { saveToken } = useAuth();
 
   const [form, setForm] = useState<SignupForm>({
     name: "",
@@ -63,8 +65,18 @@ const SignupPage = () => {
         setLoading(false);
         return;
       }
-      router.push("/");
+      const { token, user } = data;
+      saveToken(token, user);
+
       toast.success("Signup successful! ");
+      toast.success("Signup successful!");
+
+      // ✅ Redirect based on role
+      if (user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
