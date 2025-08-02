@@ -32,6 +32,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
+    localStorage.removeItem("role");
 
     router.push("/login");
   };

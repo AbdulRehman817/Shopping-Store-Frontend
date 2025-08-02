@@ -26,6 +26,7 @@ export default function AdminSettingsPage() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
+    localStorage.removeItem("role");
 
     router.push("/login"); // change this to your actual login route
   };
