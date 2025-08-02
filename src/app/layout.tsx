@@ -8,6 +8,8 @@ import Footer from "./footer/page";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
 import { usePathname } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // ✅ Import fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +46,7 @@ export default function RootLayout({
 
             {children}
             {/* ✅ Footer */}
-            {/* <ToastContainer position="top-right" /> */}
+            <ToastContainer position="top-right" />
             {!isHiddenLayout && <Footer />}
           </AuthProvider>
         </Provider>

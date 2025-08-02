@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
 interface SignupForm {
   name: string;
   email: string;
@@ -56,14 +56,16 @@ const SignupPage = () => {
       console.log(data);
       if (!res.ok) {
         setError(data.message || "Signup failed");
+        toast.error(data.message || "Signup failed");
         console.log("error is coming", error);
         return;
-      } else {
-        router.push("/");
       }
+      router.push("/");
+      toast.success("Signup successful! ");
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
