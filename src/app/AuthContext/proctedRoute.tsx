@@ -37,10 +37,8 @@ const ProtectedRouteProvider = ({ children }: ProtectedRouteProps) => {
         // Role-based routing
         if (parsedUser.role === "admin") {
           router.push("/admin/dashboard");
-        } else if (parsedUser.role === "user") {
-          router.push("/");
         } else {
-          router.push("/login");
+          router.push("/"); // Redirect to home for regular users
         }
       } catch (err) {
         console.error("Auth error:", err);
