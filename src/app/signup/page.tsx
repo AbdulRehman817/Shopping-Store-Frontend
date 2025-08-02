@@ -58,9 +58,9 @@ const SignupPage = () => {
         setError(data.message || "Signup failed");
         console.log("error is coming", error);
         return;
+      } else {
+        router.push("/");
       }
-
-      router.push("/");
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
