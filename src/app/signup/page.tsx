@@ -51,39 +51,37 @@ const SignupPage = () => {
         "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/signup",
         {
           method: "POST",
-
           body: formData,
         }
       );
 
       const data = await res.json();
-      console.log(data);
+      console.log("Signup response:", data);
+
       if (!res.ok) {
         setError(data.message || "Signup failed");
         toast.error(data.message || "Signup failed");
-        console.log("error is coming", error);
         setLoading(false);
         return;
       }
-      // const { token, user } = data;
-      saveToken(data.accessToken, data.data);
-      console.log("Signup successful:", data.data);
-      const role = data.data; // ← Extract user from response
 
-      if (role === "admin") {
+      // ✅ Save token and user
+      saveToken(data.accessToken, data.data);
+
+      // ✅ Redirect based on user role
+      if (data.data.role === "admin") {
         router.push("/admin/dashboard");
       } else {
         router.push("/");
       }
 
-      toast.success("Signup successful! ");
       toast.success("Signup successful!");
-
-      // ✅ Redirect based on role
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
