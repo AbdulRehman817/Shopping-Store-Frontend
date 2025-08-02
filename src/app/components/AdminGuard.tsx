@@ -23,7 +23,7 @@ export default function AdminGuard({ children }: Props) {
     const fetchUser = async () => {
       try {
         const res = await fetch(
-          "https://shopping-store-bqd2.vercel.app/api/v1/profile",
+          "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/profile",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

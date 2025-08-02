@@ -4,7 +4,7 @@ import Link from "next/link";
 import CartDropdown from "./CartDropdown";
 import { ShoppingCart, LogIn, Menu, X, User } from "lucide-react";
 import { useState } from "react";
-import { motion } from "framer-motion"; // * Framer Motion for animations
+import { motion } from "framer-motion"; // * Framer Motion for   animations
 import { useRouter } from "next/navigation";
 import { useAuth } from "../AuthContext/authcontext";
 import { useSelector } from "react-redux";

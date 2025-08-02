@@ -44,7 +44,7 @@ const SignupPage = () => {
 
     try {
       const res = await fetch(
-        "https://shopping-store-bqd2.vercel.app/api/v1/register",
+        "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/signup",
         {
           method: "POST",
           credentials: "include",

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { useAuth } from "../AuthContext/authcontext";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("admin");
-
+  const { saveToken, fetchUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -21,7 +22,7 @@ const LoginPage = () => {
 
     try {
       const res = await fetch(
-        "https://shopping-store-bqd2.vercel.app/api/v1/login",
+        "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -37,7 +38,8 @@ const LoginPage = () => {
         setLoading(false); // ← fix here
         return;
       }
-
+      saveToken(data.accessToken);
+      fetchUser();
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.data));
 

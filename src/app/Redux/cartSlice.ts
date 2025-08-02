@@ -27,7 +27,7 @@ export const fetchProducts = createAsyncThunk<Product[]>(
   "cart/fetchProducts",
   async () => {
     const response = await fetch(
-      `https://shopping-store-bqd2.vercel.app/api/v1/getProduct`
+      `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/getProduct`
     );
     const data = await response.json();
     return data.products; // Assuming API returns { products: [...] }

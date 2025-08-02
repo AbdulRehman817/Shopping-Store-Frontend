@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        "https://shopping-store-alpha-eight.vercel.app/api/v1/admin/users",
+        "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/users",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

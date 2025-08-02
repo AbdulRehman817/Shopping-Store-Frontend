@@ -22,7 +22,8 @@ interface AuthContextType {
   isLoggedIn: boolean;
   saveToken: (token: string) => void;
   LogoutUser: () => void;
-  storetokenInLocalStorage: (accessToken: string | null) => void; // ✅ Add this line
+  storetokenInLocalStorage: (accessToken: string | null) => void;
+  fetchUser: () => void; // ✅ add this line
 }
 
 // TODO: Provider ke children ka type define kiya
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const res = await fetch(
-        "https://shopping-store-bqd2.vercel.app/api/v1/profile",
+        "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -126,6 +127,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         saveToken,
         LogoutUser,
         storetokenInLocalStorage,
+        fetchUser, // ✅ include here
       }}
     >
       {children}

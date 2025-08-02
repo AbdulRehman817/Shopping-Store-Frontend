@@ -81,7 +81,7 @@ const OrderConfirmation = () => {
         const userId = decoded.userId;
 
         const res = await fetch(
-          `https://shopping-store-bqd2.vercel.app/admin/user/${userId}`
+          `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/admin/user/${userId}`
         );
         const data = await res.json();
 

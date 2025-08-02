@@ -23,7 +23,7 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     const token = localStorage.getItem("token");
     const res = await fetch(
-      "https://shopping-store-bqd2.vercel.app/api/v1/admin/orders",
+      "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/orders",
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -82,7 +82,7 @@ const Checkout = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        "https://shopping-store-bqd2.vercel.app/api/v1/admin/orders",
+        "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/orders",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
