@@ -65,8 +65,16 @@ const SignupPage = () => {
         setLoading(false);
         return;
       }
-      const { token, user } = data;
-      saveToken(token, user);
+      // const { token, user } = data;
+      saveToken(data.accessToken, data.data);
+      console.log("Signup successful:", data.data);
+      const user = data.data; // ← Extract user from response
+
+      if (user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
 
       toast.success("Signup successful! ");
       toast.success("Signup successful!");
