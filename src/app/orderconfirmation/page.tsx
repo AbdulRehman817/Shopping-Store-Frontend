@@ -81,7 +81,7 @@ const OrderConfirmation = () => {
         const userId = decoded.userId;
 
         const res = await fetch(
-          `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/admin/user/${userId}`
+          `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/user/${userId}`
         );
         const data = await res.json();
 
