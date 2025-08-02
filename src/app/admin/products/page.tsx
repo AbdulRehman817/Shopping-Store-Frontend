@@ -67,7 +67,7 @@ export default function AdminProductsPage() {
 
       <div className="overflow-x-auto mt-6">
         {loading ? (
-          <p className="text-white">Loading products...</p>
+          <Loader />
         ) : products.length === 0 ? (
           <p className="text-white">No products available.</p>
         ) : (
