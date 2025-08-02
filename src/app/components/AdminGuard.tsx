@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "./Loader";
 
 interface Props {
   children: React.ReactNode;
@@ -47,7 +48,11 @@ export default function AdminGuard({ children }: Props) {
   }, [router]);
 
   if (isAdmin === null) {
-    return <div className="p-8 text-center">Checking admin access...</div>;
+    return (
+      <div className="p-8 text-center">
+        <Loader />
+      </div>
+    );
   }
 
   return <>{children}</>;

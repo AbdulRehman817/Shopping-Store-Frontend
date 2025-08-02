@@ -1,23 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
 import AdminLayout from "@/app/components/AdminLayout";
 import AdminGuard from "@/app/components/AdminGuard";
-import Loader from "@/app/components/Loader";
 
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) return <Loader />;
-
   return (
     <AdminGuard>
       <AdminLayout>
