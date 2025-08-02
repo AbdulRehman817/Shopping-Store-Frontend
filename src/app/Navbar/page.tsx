@@ -29,6 +29,10 @@ const Navbar = () => {
   // TODO: Logout function, user ko Login page pe redirect karta hai
   const SignoutUser = () => {
     LogoutUser();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("cart");
+
     router.push("/login");
   };
 
