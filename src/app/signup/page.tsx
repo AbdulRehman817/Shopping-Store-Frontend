@@ -47,15 +47,16 @@ const SignupPage = () => {
         "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/signup",
         {
           method: "POST",
-         
+
           body: formData,
         }
       );
 
       const data = await res.json();
-
+      console.log(data);
       if (!res.ok) {
         setError(data.message || "Signup failed");
+        console.log("error is coming", error);
         return;
       }
 
