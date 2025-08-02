@@ -68,9 +68,9 @@ const SignupPage = () => {
       // const { token, user } = data;
       saveToken(data.accessToken, data.data);
       console.log("Signup successful:", data.data);
-      const user = data.data; // ← Extract user from response
+      const role = data.data; // ← Extract user from response
 
-      if (user.role === "admin") {
+      if (role === "admin") {
         router.push("/admin/dashboard");
       } else {
         router.push("/");
@@ -80,11 +80,6 @@ const SignupPage = () => {
       toast.success("Signup successful!");
 
       // ✅ Redirect based on role
-      if (user.role === "admin") {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/");
-      }
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
