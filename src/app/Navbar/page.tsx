@@ -54,9 +54,6 @@ const Navbar = () => {
           <Link href="/about" className="hover:text-[#FACC15] transition">
             About
           </Link>
-          <Link href="/contact" className="hover:text-[#FACC15] transition">
-            Contact
-          </Link>
         </div>
 
         {/* * Desktop Icons + Search bar */}
