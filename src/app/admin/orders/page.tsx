@@ -96,7 +96,7 @@ export default function AdminOrdersPage() {
                   <td className="p-3 sm:p-4">{order.shippingInfo?.email}</td>
                   <td className="p-3 sm:p-4">{order.shippingInfo?.address}</td>
                   <td className="p-3 sm:p-4 text-green-400">
-                    ${order.totalAmount.toFixed(2)}
+                    ${order.totalAmount}
                   </td>
                   <td className="p-3 sm:p-4">
                     {new Date(order.createdAt).toLocaleDateString()}
