@@ -6,16 +6,15 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 
-// TODO: Yeh interface user ka type define karta hai
 interface User {
   image: string;
   name: string;
   email: string;
-  // TODO: Agar aur fields hain to yahan add karo
+  role: string;
 }
 
-// TODO: Yeh interface AuthContext ka type define karta hai
 interface AuthContextType {
   token: string | null;
   user: User | null;
@@ -23,29 +22,21 @@ interface AuthContextType {
   saveToken: (token: string, user: User) => void;
   LogoutUser: () => void;
   storetokenInLocalStorage: (accessToken: string | null) => void;
-  fetchUser: () => void; // ✅ add this line
+  fetchUser: () => void;
 }
 
-// TODO: Provider ke children ka type define kiya
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-// * Context create kiya jisme default value null hai
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// * AuthProvider component jise app ke around wrap karte hain
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // ! RED: localStorage ko direct use nahi kar sakte kyunki server-side pe run hota hai
+  const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-
-  // * User ka data store karne ke liye state
-  // ! RED: Pehle yahan type 'object' use kiya tha jo galat tha
   const [user, setUser] = useState<User | null>(null);
 
-  //
-
-  const storetokenInLocalStorage = (accessToken: any) => {
+  const storetokenInLocalStorage = (accessToken: string | null) => {
     if (accessToken) {
       localStorage.setItem("token", accessToken);
       setToken(accessToken);
@@ -55,7 +46,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // ? Jab login hota hai to token save karte hain
   const saveToken = (newToken: string, newUser: User) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("token", newToken);
@@ -63,18 +53,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     setToken(newToken);
     setUser(newUser);
+
+    // 🔁 Redirect after saving token
+    if (newUser.role === "admin") {
+      router.push("/admin/dashboard");
+    } else {
+      router.push("/");
+    }
   };
 
-  // ? Logout karne par token aur user dono clear kar dete hain
   const LogoutUser = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token"); // token ko localStorage se hata diya
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
-    setToken(null); // state se bhi hata diya
-    setUser(null); // user data bhi clear kar diya
+    setToken(null);
+    setUser(null);
+    router.push("/login");
   };
 
-  // * User ka data backend se fetch karo
   const fetchUser = async () => {
     if (!token) return;
 
@@ -88,38 +85,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       );
 
-      const data = await res.json(); //*this line parses the JSON response
+      const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to fetch user");
       }
-      setUser(data.data as User); //* ye line jo asal object usko overwrite kardeata hai
-      //* yani agar pehle user object mei name or email tha phir
-      //* mene ye line of code likha to wo user ko overwrite karke
-      //* name,email or image add kardega
-      console.log("User fetched:", data.data); // *and now i can access user properties like user.data.name
+
+      setUser(data.data as User);
+      console.log("User fetched:", data.data);
     } catch (error) {
-      console.error("Failed to fetch user:", error); // ! agar error aaye to console mein dikhaya
+      console.error("Failed to fetch user:", error);
     }
   };
 
-  // * Jab component mount ho to localStorage se token uthao
+  // 🌐 Parse JWT to check expiry
+  const parseJwt = (token: string) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const localToken = localStorage.getItem("token");
-      if (localToken) {
-        setToken(localToken);
+    const localToken = localStorage.getItem("token");
+    const localUser = localStorage.getItem("user");
+
+    if (localToken && localUser) {
+      const decoded = parseJwt(localToken);
+
+      if (!decoded || decoded.exp * 1000 < Date.now()) {
+        LogoutUser();
+        return;
       }
+
+      setToken(localToken);
+      setUser(JSON.parse(localUser));
     }
   }, []);
 
-  // * Jab token change ho to user data dobara fetch karo
   useEffect(() => {
-    if (token) {
+    if (token && !user) {
       fetchUser();
     }
   }, [token]);
 
-  // * Auth context values ko return karo
   return (
     <AuthContext.Provider
       value={{
@@ -129,7 +138,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         saveToken,
         LogoutUser,
         storetokenInLocalStorage,
-        fetchUser, // ✅ include here
+        fetchUser,
       }}
     >
       {children}
@@ -137,12 +146,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-// * useAuth custom hook jisse context access kar sakein
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
-  // ! Error agar provider ke bahar use ho raha ho
-  if (!context) throw new Error("useAuth must be used inside AuthProvider");
-
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
   return context;
 };
