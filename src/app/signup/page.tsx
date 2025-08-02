@@ -47,7 +47,7 @@ const SignupPage = () => {
         "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/signup",
         {
           method: "POST",
-          credentials: "include",
+         
           body: formData,
         }
       );
