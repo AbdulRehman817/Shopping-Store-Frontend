@@ -20,12 +20,10 @@ interface Product {
 const TeamPage = () => {
   const params = useParams();
   const teamParam = params?.team;
-
-  const team = Array.isArray(teamParam) ? teamParam[0] : teamParam || ""; // fallback to empty string
+  const team = Array.isArray(teamParam) ? teamParam[0] : teamParam || "";
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true); // ✅ Loader state
-
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -54,10 +52,10 @@ const TeamPage = () => {
       <Loader />
     </div>
   ) : (
-    <div className="flex min-h-screen bg-[#0F172A] text-white">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[#0F172A] text-white">
       {/* Sidebar */}
-      <aside className="w-[310px] bg-[#1E293B] px-5 py-[100px]">
-        <div className="space-y-3">
+      <aside className="w-full lg:w-[310px] bg-[#1E293B] px-5 py-10 lg:py-[100px]">
+        <div className="space-y-3 flex flex-col sm:flex-row lg:flex-col gap-3">
           <button className="w-full bg-yellow-400 text-black font-bold py-2 rounded-md text-sm">
             All Jerseys
           </button>
@@ -85,16 +83,16 @@ const TeamPage = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 px-10 py-10">
-        <h1 className="text-5xl font-extrabold text-yellow-400 mt-[60px] text-center tracking-wide">
+      <main className="flex-1 px-4 sm:px-6 lg:px-10 py-10">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-400 mt-8 text-center tracking-wide">
           {team.toUpperCase()} JERSEYS
         </h1>
-        <p className="mt-2 text-gray-300 text-lg text-center">
+        <p className="mt-2 text-gray-300 text-base sm:text-lg text-center">
           {filteredProducts.length} results · Official 2024 Kits
         </p>
 
         {/* Product Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <motion.div key={product._id} whileHover={{ scale: 1.03 }}>
@@ -102,7 +100,9 @@ const TeamPage = () => {
               </motion.div>
             ))
           ) : (
-            <p className="text-white">No jerseys found.</p>
+            <p className="text-white col-span-full text-center">
+              No jerseys found.
+            </p>
           )}
         </div>
       </main>
