@@ -120,7 +120,7 @@ const OrderConfirmation = () => {
   // ✅ Use latest order
   const latestOrder = orders[0];
 
-  const total = latestOrder.items
+  const total = cart
     .reduce((sum, item) => sum + item.quantity * item.productId.price, 0)
     .toFixed(2);
 
