@@ -95,6 +95,7 @@ const Checkout = () => {
         router.push("/orderconfirmation");
       } else {
         const data = await res.json();
+        console.log("data fetched", data);
         alert(data.message || "Order failed.");
       }
     } catch (error) {

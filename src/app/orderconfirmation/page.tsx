@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import type { RootState } from "../Redux/store";
 import Image from "next/image";
 import Loader from "../components/Loader";
-import { jsPDF } from "jspdf";
 
 interface Product {
   _id: string;
@@ -29,17 +28,15 @@ interface Order {
   _id: string;
   userId: string;
   items: OrderItem[];
-  shippingInfo: {
-    address: string;
-    city: string;
-    country: string;
-  };
+  shippingInfo: any;
   status: "Pending" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
 }
 
 interface TokenPayload {
   userId: string;
+  email?: string;
+  exp?: number;
 }
 
 const steps = ["Order Placed", "Processing", "Shipped", "Delivered"];
@@ -47,13 +44,15 @@ const steps = ["Order Placed", "Processing", "Shipped", "Delivered"];
 const OrderConfirmation = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.allCart.cart || []);
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Restore cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) dispatch(setCart(JSON.parse(savedCart)));
+    if (savedCart) {
+      dispatch(setCart(JSON.parse(savedCart)));
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -63,27 +62,49 @@ const OrderConfirmation = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return toast.error("User not authenticated.");
+
+      if (!token) {
+        toast.error("User not authenticated.");
+        setLoading(false);
+        return;
+      }
 
       try {
-        const { userId } = jwtDecode<TokenPayload>(token);
+        console.log("🔐 Token:", token);
+        const decoded = jwtDecode<TokenPayload>(token);
+        console.log("👤 Decoded Token:", decoded);
+
+        const userId = decoded.userId;
         const res = await fetch(
           `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/user/${userId}`
         );
         const data = await res.json();
+        console.log("📦 API Response:", data);
+
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
+        console.log("✅ Orders Set:", data.orders);
       } catch (err: any) {
-        toast.error(err.message || "Error loading orders.");
+        console.error("❌ Fetch Error:", err);
+        toast.error(err.message || "Failed to load orders.");
       } finally {
         setLoading(false);
       }
     };
+
     fetchOrders();
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <p className="text-[#facc15] text-center mt-20 text-lg">
+        <Loader />
+      </p>
+    );
+  }
+
   if (!orders.length) {
+    console.log("⚠️ No orders found.");
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
         No recent orders found.
@@ -92,11 +113,13 @@ const OrderConfirmation = () => {
   }
 
   const latestOrder = orders[0];
+  console.log("🧾 Latest Order:", latestOrder);
+
   const total = latestOrder.items
-    .reduce(
-      (sum, item) => sum + (item?.productId?.price ?? 0) * item.quantity,
-      0
-    )
+    ?.reduce((sum, item) => {
+      const price = item?.productId?.price ?? 0;
+      return sum + price * item.quantity;
+    }, 0)
     .toFixed(2);
 
   const currentStepIndex =
@@ -108,31 +131,6 @@ const OrderConfirmation = () => {
       ? 3
       : 0;
 
-  const generateInvoicePDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16).text("Invoice", 10, 10);
-    doc.setFontSize(12);
-    doc.text(`Order ID: ${latestOrder._id}`, 10, 20);
-    doc.text(`Status: ${latestOrder.status}`, 10, 30);
-    const { address, city, country } = latestOrder.shippingInfo;
-    doc.text(`Shipping Address: ${address}, ${city}, ${country}`, 10, 40);
-    doc.text("Items:", 10, 50);
-    let y = 60;
-    latestOrder.items.forEach((item, i) => {
-      const p = item.productId;
-      doc.text(
-        `${i + 1}. ${p.name} (x${item.quantity}) – $${(
-          p.price * item.quantity
-        ).toFixed(2)}`,
-        10,
-        y
-      );
-      y += 10;
-    });
-    doc.text(`Total: $${total}`, 10, y + 10);
-    doc.save(`invoice-${latestOrder._id}.pdf`);
-  };
-
   return (
     <motion.div
       className="min-h-screen bg-[#1E293B] text-[#facc15] px-6 py-12"
@@ -140,7 +138,7 @@ const OrderConfirmation = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* ✅ Confirmation Message */}
+      {/* ✅ Confirmation Header */}
       <div className="text-center mt-[40px] mb-12">
         <CheckCircle size={64} className="mx-auto text-[#facc15]" />
         <h1 className="text-4xl font-bold mt-4">Order Confirmed</h1>
@@ -149,7 +147,7 @@ const OrderConfirmation = () => {
         </p>
       </div>
 
-      {/* 🚚 Order Progress */}
+      {/* 🚚 Order Status Tracker */}
       <div className="max-w-3xl mx-auto mb-10">
         <h2 className="text-2xl font-semibold mb-4">Order Status</h2>
         <div className="flex items-center justify-between">
@@ -178,36 +176,20 @@ const OrderConfirmation = () => {
         </div>
       </div>
 
-      {/* 🧾 Order Details */}
+      {/* 🧾 Order Summary */}
       <div className="max-w-3xl mx-auto bg-[#1e293b] p-6 rounded-xl shadow-2xl space-y-4">
         <h2 className="text-xl font-semibold border-b border-gray-600 pb-4">
           Your Order
         </h2>
 
-        <div className="text-sm text-gray-300 space-y-1 mb-4">
-          <p>
-            <strong>Order ID:</strong> {latestOrder._id}
-          </p>
-          <p>
-            <strong>Status:</strong> {latestOrder.status}
-          </p>
-          <p>
-            <strong>Estimated Delivery:</strong> 2–3 Business Days
-          </p>
-          <p>
-            <strong>Shipping Address:</strong>{" "}
-            {`${latestOrder.shippingInfo.address}, ${latestOrder.shippingInfo.city}, ${latestOrder.shippingInfo.country}`}
-          </p>
-          <button
-            onClick={generateInvoicePDF}
-            className="mt-2 inline-block px-4 py-2 bg-[#D43F52] text-white rounded-md hover:bg-red-600 transition"
-          >
-            Download Invoice
-          </button>
-        </div>
+        {latestOrder.items?.map((item, idx) => {
+          const product = item?.productId;
+          console.log(`🛍️ Item ${idx + 1}:`, item);
+          if (!product) {
+            console.warn(`⚠️ Product not found for item ${idx + 1}`);
+            return null;
+          }
 
-        {latestOrder.items.map((item) => {
-          const product = item.productId;
           return (
             <div
               key={product._id}
@@ -239,7 +221,7 @@ const OrderConfirmation = () => {
         </div>
       </div>
 
-      {/* 🔁 Continue Shopping */}
+      {/* 🛒 Continue Shopping */}
       <div className="text-center mt-12">
         <Link
           href="/"
