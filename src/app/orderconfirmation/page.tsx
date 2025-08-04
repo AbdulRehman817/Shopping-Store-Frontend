@@ -29,15 +29,17 @@ interface Order {
   _id: string;
   userId: string;
   items: OrderItem[];
-  shippingInfo: any;
+  shippingInfo: {
+    address: string;
+    city: string;
+    country: string;
+  };
   status: "Pending" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
 }
 
 interface TokenPayload {
   userId: string;
-  email?: string;
-  exp?: number;
 }
 
 const steps = ["Order Placed", "Processing", "Shipped", "Delivered"];
@@ -45,15 +47,13 @@ const steps = ["Order Placed", "Processing", "Shipped", "Delivered"];
 const OrderConfirmation = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.allCart.cart || []);
-
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Restore cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      dispatch(setCart(JSON.parse(savedCart)));
-    }
+    if (savedCart) dispatch(setCart(JSON.parse(savedCart)));
   }, [dispatch]);
 
   useEffect(() => {
@@ -63,31 +63,18 @@ const OrderConfirmation = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("User not authenticated.");
-        setLoading(false);
-        return;
-      }
+      if (!token) return toast.error("User not authenticated.");
 
       try {
-        console.log("🔐 Token:", token);
-        const decoded = jwtDecode<TokenPayload>(token);
-        console.log("👤 Decoded Token:", decoded);
-
-        const userId = decoded.userId;
+        const { userId } = jwtDecode<TokenPayload>(token);
         const res = await fetch(
           `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/user/${userId}`
         );
         const data = await res.json();
-        console.log("📦 API Response:", data);
-
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
-        console.log("✅ Orders Set:", data.orders);
       } catch (err: any) {
-        console.error("❌ Fetch Error:", err);
-        toast.error(err.message || "Failed to load orders.");
+        toast.error(err.message || "Error loading orders.");
       } finally {
         setLoading(false);
       }
@@ -95,16 +82,8 @@ const OrderConfirmation = () => {
     fetchOrders();
   }, []);
 
-  if (loading) {
-    return (
-      <p className="text-[#facc15] text-center mt-20 text-lg">
-        <Loader />
-      </p>
-    );
-  }
-
+  if (loading) return <Loader />;
   if (!orders.length) {
-    console.log("⚠️ No orders found.");
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
         No recent orders found.
@@ -113,13 +92,11 @@ const OrderConfirmation = () => {
   }
 
   const latestOrder = orders[0];
-  console.log("🧾 Latest Order:", latestOrder);
-
   const total = latestOrder.items
-    ?.reduce((sum, item) => {
-      const price = item?.productId?.price ?? 0;
-      return sum + price * item.quantity;
-    }, 0)
+    .reduce(
+      (sum, item) => sum + (item?.productId?.price ?? 0) * item.quantity,
+      0
+    )
     .toFixed(2);
 
   const currentStepIndex =
@@ -133,23 +110,20 @@ const OrderConfirmation = () => {
 
   const generateInvoicePDF = () => {
     const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("Invoice", 10, 10);
+    doc.setFontSize(16).text("Invoice", 10, 10);
     doc.setFontSize(12);
     doc.text(`Order ID: ${latestOrder._id}`, 10, 20);
     doc.text(`Status: ${latestOrder.status}`, 10, 30);
-    const address = latestOrder.shippingInfo
-      ? `${latestOrder.shippingInfo.address}, ${latestOrder.shippingInfo.city}, ${latestOrder.shippingInfo.country}`
-      : "N/A";
-    doc.text(`Shipping Address: ${address}`, 10, 40);
+    const { address, city, country } = latestOrder.shippingInfo;
+    doc.text(`Shipping Address: ${address}, ${city}, ${country}`, 10, 40);
     doc.text("Items:", 10, 50);
     let y = 60;
-    latestOrder.items.forEach((item, idx) => {
-      const prod = item.productId;
+    latestOrder.items.forEach((item, i) => {
+      const p = item.productId;
       doc.text(
-        `${idx + 1}. ${prod.name} (x${item.quantity}) – unit $${
-          prod.price
-        } = $${(prod.price * item.quantity).toFixed(2)}`,
+        `${i + 1}. ${p.name} (x${item.quantity}) – $${(
+          p.price * item.quantity
+        ).toFixed(2)}`,
         10,
         y
       );
@@ -166,7 +140,7 @@ const OrderConfirmation = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* ✅ Confirmation Header */}
+      {/* ✅ Confirmation Message */}
       <div className="text-center mt-[40px] mb-12">
         <CheckCircle size={64} className="mx-auto text-[#facc15]" />
         <h1 className="text-4xl font-bold mt-4">Order Confirmed</h1>
@@ -175,7 +149,7 @@ const OrderConfirmation = () => {
         </p>
       </div>
 
-      {/* 🚚 Order Status Tracker */}
+      {/* 🚚 Order Progress */}
       <div className="max-w-3xl mx-auto mb-10">
         <h2 className="text-2xl font-semibold mb-4">Order Status</h2>
         <div className="flex items-center justify-between">
@@ -204,7 +178,7 @@ const OrderConfirmation = () => {
         </div>
       </div>
 
-      {/* 🧾 Order Summary with Invoice */}
+      {/* 🧾 Order Details */}
       <div className="max-w-3xl mx-auto bg-[#1e293b] p-6 rounded-xl shadow-2xl space-y-4">
         <h2 className="text-xl font-semibold border-b border-gray-600 pb-4">
           Your Order
@@ -232,9 +206,8 @@ const OrderConfirmation = () => {
           </button>
         </div>
 
-        {latestOrder.items?.map((item, idx) => {
+        {latestOrder.items.map((item) => {
           const product = item.productId;
-          if (!product) return null;
           return (
             <div
               key={product._id}
@@ -266,7 +239,7 @@ const OrderConfirmation = () => {
         </div>
       </div>
 
-      {/* 🛒 Continue Shopping */}
+      {/* 🔁 Continue Shopping */}
       <div className="text-center mt-12">
         <Link
           href="/"
