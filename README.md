@@ -1,4 +1,3 @@
-
 # 🛍️ Modern Full Stack E-commerce App
 
 A powerful and beautifully built e-commerce web app with **Next.js**, **TypeScript**, **MongoDB**, and **Tailwind CSS**, featuring:
@@ -10,21 +9,25 @@ A powerful and beautifully built e-commerce web app with **Next.js**, **TypeScri
 ## 🌟 Features
 
 ### 👤 Authentication
+
 - Signup & Signin with secure password hashing
 - Role-based access (User & Admin)
 
 ### 🛒 Shopping Experience
+
 - Add to Cart
 - Quantity updates
 - Product images, details & pricing
 
 ### 🚚 Order Workflow
+
 - Shipping address collection
 - Order Summary page
 - Invoice (PDF) generation
 - Order tracking (status, ID, date)
 
 ### 🧑‍💼 Admin Panel
+
 - View all products
 - Manage users & orders
 - Add, edit, delete products
@@ -47,17 +50,18 @@ A powerful and beautifully built e-commerce web app with **Next.js**, **TypeScri
 - 🔗 **Backend API:** [`/api/v1`](https://github.com/AbdulRehman817/Shopping_Store)
 - 📦 **Admin Access:** [`/admin`](https://shopping-store-frontend-chi.vercel.app/admin/dashboard)
 
-> 📝 **Demo Credentials**  
-> - User: `abdulrehman1718@gmail.com` / `abdulrehman1718`  
+> 📝 **Demo Credentials**
+>
+> - User: `abdulrehman1718@gmail.com` / `abdulrehman1718`
 > - Admin: `abc@example.com` / `12345678`
 
 ---
 
 ## 📸 Preview
 
-| User View | Admin Panel |
-|-----------|-------------|
-| ![User Screenshot](/public/images/Capture.PNG2.PNG) | ![Admin Screenshot](/public/images/Capture.PNG6.PNG) |
+| User View                                       | Admin Panel                                      |
+| ----------------------------------------------- | ------------------------------------------------ |
+| ![User Screenshot](/public/images/Capture2.png) | ![Admin Screenshot](/public/images/Capture6.png) |
 
 ---
 
