@@ -171,6 +171,7 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/app/components/AdminLayout";
+import { toast } from "react-toastify";
 
 interface OrderItem {
   _id: string;
@@ -199,20 +200,33 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem("token");
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("User not authenticated.");
+        return;
+      }
+
       const res = await fetch(
         "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/orders",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      if (!res.ok) {
+        console.error("Fetch failed:", res.status, await res.text());
+        toast.error(`Server error: ${res.status}`);
+        setOrders([]);
+        return;
+      }
+
       const data = await res.json();
+      console.log("Fetched orders:", data);
       setOrders(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
+    } catch (err) {
+      console.error("Network or parsing error:", err);
+      toast.error("Failed to fetch orders.");
       setOrders([]);
     }
   };
