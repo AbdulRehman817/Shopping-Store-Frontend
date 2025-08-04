@@ -186,9 +186,11 @@ interface Order {
   _id: string;
   items: OrderItem[];
   shippingInfo: {
-    fullName: string;
     phoneNumber: number;
     address: string;
+  };
+  userId?: {
+    name: string;
   };
   totalAmount: number;
   status: string;
@@ -280,7 +282,7 @@ export default function AdminOrdersPage() {
                     className="border-b border-gray-700 hover:bg-[#1C2739] transition"
                   >
                     <td className="px-4 py-3 font-medium">
-                      {order.shippingInfo?.fullName}
+                      {order.userId?.name}
                     </td>
                     <td className="px-4 py-3">
                       {order.shippingInfo?.phoneNumber}
