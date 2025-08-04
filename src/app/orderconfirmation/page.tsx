@@ -84,6 +84,7 @@ const OrderConfirmation = () => {
           `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/user/${userId}`
         );
         const data = await res.json();
+        console.log(data);
 
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
