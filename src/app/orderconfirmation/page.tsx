@@ -5,11 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { useSelector, useDispatch } from "react-redux";
-import { setCart } from "../Redux/cartSlice";
 import { toast } from "react-toastify";
-
-import type { RootState } from "../Redux/store";
 import Image from "next/image";
 import Loader from "../components/Loader";
 
@@ -24,16 +20,28 @@ interface Product {
 }
 
 interface OrderItem {
+  _id: string;
   productId: Product;
   quantity: number;
+}
+
+interface ShippingInfo {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
 }
 
 interface Order {
   _id: string;
   userId: string;
   items: OrderItem[];
+  shippingInfo: ShippingInfo;
   status: "Pending" | "Shipped" | "Delivered" | "Cancelled";
+  totalAmount: number;
   createdAt: string;
+  updatedAt: string;
+  ImageURL: string;
 }
 
 interface TokenPayload {
@@ -42,30 +50,12 @@ interface TokenPayload {
   exp?: number;
 }
 
-/* 📦 Order Status Steps */
 const steps = ["Order Placed", "Processing", "Shipped", "Delivered"];
 
 const OrderConfirmation = () => {
-  const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.allCart.cart || []);
-
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /* ✅ Load cart from localStorage on mount */
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      dispatch(setCart(JSON.parse(savedCart)));
-    }
-  }, [dispatch]);
-
-  /* 💾 Sync cart to localStorage when it updates */
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  /* 🚀 Fetch user's order data */
   useEffect(() => {
     const fetchOrders = async () => {
       const token = localStorage.getItem("token");
@@ -84,7 +74,6 @@ const OrderConfirmation = () => {
           `https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/user/${userId}`
         );
         const data = await res.json();
-        console.log(data);
 
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
@@ -98,9 +87,6 @@ const OrderConfirmation = () => {
     fetchOrders();
   }, []);
 
-  /* 🧮 Helper: Calculate total cart price */
-
-  // * Loading state
   if (loading)
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
@@ -108,9 +94,6 @@ const OrderConfirmation = () => {
       </p>
     );
 
-  // * Error state
-
-  // * No orders found
   if (!orders.length)
     return (
       <p className="text-[#facc15] text-center mt-20 text-lg">
@@ -118,14 +101,8 @@ const OrderConfirmation = () => {
       </p>
     );
 
-  // ✅ Use latest order
   const latestOrder = orders[0];
 
-  const total = cart
-    .reduce((sum, item) => sum + item.quantity * item.productId.price, 0)
-    .toFixed(2);
-
-  // 🔄 Map order status to index
   const currentStepIndex =
     latestOrder.status === "Pending"
       ? 1
@@ -186,31 +163,35 @@ const OrderConfirmation = () => {
           Your Order
         </h2>
 
-        {cart.map((item, index) => (
+        {latestOrder.items.map((item, index) => (
           <div
-            key={index}
+            key={item._id}
             className="flex items-center justify-between border-b border-gray-700 pb-4"
           >
             <div className="flex items-center space-x-4">
               <Image
-                src={item.image}
-                alt={item.name}
-                className="w-16 h-16 object-cover rounded-lg border border-gray-600"
+                src={item.productId.image}
+                alt={item.productId.name}
+                width={64}
+                height={64}
+                className="object-cover rounded-lg border border-gray-600"
               />
               <div>
-                <p className="font-medium">{item.name}</p>
+                <p className="font-medium">{item.productId.name}</p>
                 <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
               </div>
             </div>
             <div className="text-lg font-semibold">
-              ${(item.price * item.quantity).toFixed(2)}
+              ${(item.productId.price * item.quantity).toFixed(2)}
             </div>
           </div>
         ))}
 
         <div className="flex justify-between text-lg font-bold pt-4">
           <span>Total</span>
-          <span className="text-[#facc15]">${total}</span>
+          <span className="text-[#facc15]">
+            ${latestOrder.totalAmount.toFixed(2)}
+          </span>
         </div>
       </div>
 
