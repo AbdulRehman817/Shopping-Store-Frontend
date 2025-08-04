@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import type { RootState } from "../Redux/store";
 import Image from "next/image";
 import Loader from "../components/Loader";
+import { jsPDF } from "jspdf";
 
 interface Product {
   _id: string;
@@ -91,7 +92,6 @@ const OrderConfirmation = () => {
         setLoading(false);
       }
     };
-
     fetchOrders();
   }, []);
 
@@ -130,6 +130,34 @@ const OrderConfirmation = () => {
       : latestOrder.status === "Delivered"
       ? 3
       : 0;
+
+  const generateInvoicePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Invoice", 10, 10);
+    doc.setFontSize(12);
+    doc.text(`Order ID: ${latestOrder._id}`, 10, 20);
+    doc.text(`Status: ${latestOrder.status}`, 10, 30);
+    const address = latestOrder.shippingInfo
+      ? `${latestOrder.shippingInfo.address}, ${latestOrder.shippingInfo.city}, ${latestOrder.shippingInfo.country}`
+      : "N/A";
+    doc.text(`Shipping Address: ${address}`, 10, 40);
+    doc.text("Items:", 10, 50);
+    let y = 60;
+    latestOrder.items.forEach((item, idx) => {
+      const prod = item.productId;
+      doc.text(
+        `${idx + 1}. ${prod.name} (x${item.quantity}) – unit $${
+          prod.price
+        } = $${(prod.price * item.quantity).toFixed(2)}`,
+        10,
+        y
+      );
+      y += 10;
+    });
+    doc.text(`Total: $${total}`, 10, y + 10);
+    doc.save(`invoice-${latestOrder._id}.pdf`);
+  };
 
   return (
     <motion.div
@@ -176,20 +204,37 @@ const OrderConfirmation = () => {
         </div>
       </div>
 
-      {/* 🧾 Order Summary */}
+      {/* 🧾 Order Summary with Invoice */}
       <div className="max-w-3xl mx-auto bg-[#1e293b] p-6 rounded-xl shadow-2xl space-y-4">
         <h2 className="text-xl font-semibold border-b border-gray-600 pb-4">
           Your Order
         </h2>
 
-        {latestOrder.items?.map((item, idx) => {
-          const product = item?.productId;
-          console.log(`🛍️ Item ${idx + 1}:`, item);
-          if (!product) {
-            console.warn(`⚠️ Product not found for item ${idx + 1}`);
-            return null;
-          }
+        <div className="text-sm text-gray-300 space-y-1 mb-4">
+          <p>
+            <strong>Order ID:</strong> {latestOrder._id}
+          </p>
+          <p>
+            <strong>Status:</strong> {latestOrder.status}
+          </p>
+          <p>
+            <strong>Estimated Delivery:</strong> 2–3 Business Days
+          </p>
+          <p>
+            <strong>Shipping Address:</strong>{" "}
+            {`${latestOrder.shippingInfo.address}, ${latestOrder.shippingInfo.city}, ${latestOrder.shippingInfo.country}`}
+          </p>
+          <button
+            onClick={generateInvoicePDF}
+            className="mt-2 inline-block px-4 py-2 bg-[#D43F52] text-white rounded-md hover:bg-red-600 transition"
+          >
+            Download Invoice
+          </button>
+        </div>
 
+        {latestOrder.items?.map((item, idx) => {
+          const product = item.productId;
+          if (!product) return null;
           return (
             <div
               key={product._id}
