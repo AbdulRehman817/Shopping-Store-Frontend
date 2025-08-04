@@ -169,12 +169,6 @@ const Navbar = () => {
             >
               About
             </Link>
-            <Link
-              href="/contact"
-              className="block text-white hover:text-[#FACC15]"
-            >
-              Contact
-            </Link>
 
             <input
               type="text"
