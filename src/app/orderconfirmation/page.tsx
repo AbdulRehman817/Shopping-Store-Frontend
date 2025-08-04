@@ -85,8 +85,10 @@ const OrderConfirmation = () => {
         );
         const data = await res.json();
         console.log(data);
-        console.log(data.items);
-        console.log(data.items.productId.price);
+        console.log(data.orders);
+        console.log(data.orders.items);
+        console.log(data.orders.items.productId);
+        console.log(data.orders.items.productId.price);
 
         if (!res.ok) throw new Error("Failed to fetch orders.");
         setOrders(data.orders || []);
