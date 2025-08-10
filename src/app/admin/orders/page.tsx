@@ -171,7 +171,6 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/app/components/AdminLayout";
-import { toast } from "react-toastify";
 
 interface OrderItem {
   _id: string;
@@ -186,11 +185,9 @@ interface Order {
   _id: string;
   items: OrderItem[];
   shippingInfo: {
+    fullName: string;
     phoneNumber: number;
     address: string;
-  };
-  userId?: {
-    name: string;
   };
   totalAmount: number;
   status: string;
@@ -202,33 +199,20 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("User not authenticated.");
-        return;
-      }
-
       const res = await fetch(
         "https://chosen-millie-abdulrehmankashif-fdcd41d5.koyeb.app/api/v1/admin/orders",
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-
-      if (!res.ok) {
-        console.error("Fetch failed:", res.status, await res.text());
-        toast.error(`Server error: ${res.status}`);
-        setOrders([]);
-        return;
-      }
-
       const data = await res.json();
-      console.log("Fetched orders:", data);
       setOrders(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Network or parsing error:", err);
-      toast.error("Failed to fetch orders.");
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
       setOrders([]);
     }
   };
@@ -282,7 +266,7 @@ export default function AdminOrdersPage() {
                     className="border-b border-gray-700 hover:bg-[#1C2739] transition"
                   >
                     <td className="px-4 py-3 font-medium">
-                      {order.userId?.name}
+                      {order.shippingInfo?.fullName}
                     </td>
                     <td className="px-4 py-3">
                       {order.shippingInfo?.phoneNumber}
